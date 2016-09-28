@@ -1,0 +1,72 @@
+<html>
+<head>
+    <title>Courses Able To Deliver</title>
+    <link rel="stylesheet" type="text/css" href="../../..//WebResources/pdt_/CSS/DtStyle.css">
+    <script src="../../ClientGlobalContext.js.aspx" type="text/javascript"></script>
+    <script src="../../..//WebResources/pdt_/Toolkit/jquery.js" type="text/javascript"></script>
+    <script src="../../..//WebResources/pdt_/Toolkit/json2.js" type="text/javascript"></script>
+    <script src="../../..//WebResources/pdt_/Toolkit/XrmServiceToolkit.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function getDeliverableCourses() {
+
+            var type = parent.Xrm.Page.getAttribute("customertypecode").getValue();
+
+            if (type == null || type == "" || type == undefined) return;
+            if (type != "749700000") return;
+
+            var currentContactId = parent.Xrm.Page.data.entity.getId();
+            var trainer = parent.Xrm.Page.getAttribute("fullname").getValue();
+            var currentDate = new Date().format("yyyy-MM-dd");
+            //Create FetchXML for sub grid to filter records based on category
+            var fetchXml = "<fetch distinct='true' mapping='logical' output-format='xml-platform' version='1.0'>" +
+                          "<entity name='product' >" +
+                             "<attribute name='name' />" +
+                             "<attribute name='pdt_coursetype' />" +
+                              "<attribute name='productnumber' />" +
+                            "<link-entity name='pdt_product_pdt_qualification' from='productid' to='productid' intersect='true' >" +
+                              "<link-entity name='pdt_qualification' from='pdt_qualificationid' to='pdt_qualificationid' >" +
+                                "<link-entity name='pdt_trainerqualification' from='pdt_qualification' to='pdt_qualificationid' >" +
+                                  "<filter type='and'>" +
+                                    "<condition attribute='pdt_trainer' operator='eq' value='" + currentContactId + "' />" +
+                                    "<condition attribute='pdt_expirydate' operator='on-or-after' value='"+currentDate+"' />"+
+                                  "</filter>" +
+                                "</link-entity>" +
+                              "</link-entity>" +
+                            "</link-entity>" +
+                          "</entity>" +
+                        "</fetch>";
+            var results = XrmServiceToolkit.Soap.Fetch(fetchXml);
+
+            if (results != null && results.length > 0) {
+
+                userString = "";
+                document.getElementById("title").innerText = parent.Xrm.Page.getAttribute("fullname").getValue();
+                for (var i = 0; i < results.length; i++)
+                    userString = userString + (i + 1) + ". " + results[i].attributes["name"].value + " (" + results[i].attributes["productnumber"].value +")"+ "\n";
+                document.getElementById("courses").innerText = userString;
+            } else {
+
+                var title= document.getElementById("title");
+                title.innerHTML = "No Valid Qualification Available";               
+                title.style.color = "Red";
+               
+            }
+          
+        }
+       
+    </script>
+   
+</head>
+<body onload="getDeliverableCourses()">
+    <div>
+        <a href='#' class='buttonlink' style="float:right"   onclick="getDeliverableCourses()">Refresh</a>   
+        <h5 id="title">Please Refresh</h5>  
+        <hr />  
+        <table>
+            <tr><td><p id="courses"></p></td></tr>
+            <tr><td></td></tr>
+            <tr><td> </td></tr>
+        </table>
+    </div>
+</body>
+</html>

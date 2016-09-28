@@ -1,0 +1,469 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>  </title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script charset="UTF-8" type="text/javascript" src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&s=1">  </script>
+    <script src="../../ClientGlobalContext.js.aspx" type="text/javascript"></script>
+    <script src='../../..//WebResources/pdt_/Form/DTUtility.js' type='text/javascript'></script>
+    <script src="../../..//WebResources/pdt_/Toolkit/jquery.js" type="text/javascript"></script>
+    <script src="../../..//WebResources/pdt_/Toolkit/json2.js" type="text/javascript"></script>
+    <script src="../../..//WebResources/pdt_/Toolkit/XrmServiceToolkit.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="../../..//WebResources/pdt_/CSS/DtStyle.css" />
+    <script type="text/javascript">
+        var configFileName = "pdt_chartMapConfig";
+        var BingMapsKey = "AvA2PORWKPzgRNfnhfib3RhDj2zZ9epzcLdYVc037P8ynchZxIaEHEKXhLk9PH4T";
+        var searchManager = null;
+        var map = null;
+        var locs = [];
+        var pinInfobox = null;
+        var toolkit = null;
+
+        function GetMap() {
+
+            if (typeof (map) != 'undefined' && map != null) {
+
+                map.dispose();
+                map = null;
+            }
+            window.Microsoft.Maps.loadModule('Microsoft.Maps.Themes.BingTheme', {
+                callback: function () {
+                    var mapOptions =
+                    {
+                        credentials: BingMapsKey,
+                        enableClickableLogo: false,
+                        showDashboard: false,
+                        enableSearchLogo: false,
+                        theme: new window.Microsoft.Maps.Themes.BingTheme()
+                    }
+
+                    map = new window.Microsoft.Maps.Map(document.getElementById("mapDiv"), mapOptions);
+                    map.setView({ zoom: 8, center: new window.Microsoft.Maps.Location(51.5073, -0.127509) });
+                    window.Microsoft.Maps.loadModule('Microsoft.Maps.Search', { callback: createSearchManager });
+                    WaitSearchManager();
+                }
+            });
+
+        }
+        function createSearchManager() {
+            if (!searchManager) {
+                if (window.Microsoft.Maps.Search != undefined) {
+                    map.addComponent('searchManager', new window.Microsoft.Maps.Search.SearchManager(map));
+                    searchManager = map.getComponent('searchManager');
+                }
+            }
+        }
+        function WaitSearchManager() {
+
+            if (!searchManager) {
+                setTimeout(WaitSearchManager, 500, null); // setTimeout(func, timeMS, params...)
+            } else {
+
+                var status = window.parent.Xrm.Page.getAttribute("statecode").getValue();
+                if (status == 2 || status == 3 || status == 4) return;
+
+                // Set location on form here if it isn't in getLocation()
+
+                if (window.parent.Xrm.Page.getAttribute("pdt_trainingsite") && window.parent.Xrm.Page.getAttribute("pdt_trainingsite").getValue() != null)
+                    loadAccounts();
+
+                if (window.parent.Xrm.Page.getAttribute("pdt_coursestartdate") && window.parent.Xrm.Page.getAttribute("pdt_coursestartdate").getValue() != null)
+                    loadTrainers();
+
+
+            }
+        }
+
+        //LOADING ACCOUNTS
+        function loadAccounts() {
+
+            var trainingSite = null;
+
+            if (window.parent.Xrm.Page.getAttribute("pdt_trainingsite") && window.parent.Xrm.Page.getAttribute("pdt_trainingsite").getValue() != null) {
+                trainingSite = window.parent.Xrm.Page.getAttribute("pdt_trainingsite").getValue()[0].id;
+            }
+            else { return; }
+            try {
+
+                var myfetchXml = "<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>" +
+                  "<entity name='account'>" +
+                    "<attribute name='accountid' />" +
+                    "<attribute name='name' />" +
+                         "<attribute name='address1_postalcode' />" +
+                         "<attribute name='address1_line1' />" +
+                         "<attribute name='address1_stateorprovince' />" +
+                         "<attribute name='address1_country' />" +
+                         "<attribute name='address1_city' />" +
+                    "<attribute name='address1_longitude' />" +
+                    "<attribute name='address1_latitude' />" +
+                    "<order attribute='address1_longitude' descending='false' />" +
+                    "<filter type='or'>" +
+                     "<condition attribute='accountid' operator='eq' uitype='opportunity' value='" + trainingSite + "' />" +
+                    "</filter>" +
+                  "</entity>" +
+                "</fetch>";
+
+                var results = XrmServiceToolkit.Soap.Fetch(myfetchXml);
+
+                if (results != null && results.length > 0) {
+                    //var result = results[0];
+                    addAccountPins("account", results, true);
+                }
+            }
+            catch (err) {
+                window.parent.Xrm.Utility.alertDialog(err.message);
+            }
+        }
+
+        function addAccountPins(entityType, entities, parent, trainers) {
+
+            if (entities.length == 0) return;
+
+            for (i = 0; i < entities.length; i++) {
+                var result = entities[i];
+
+                var searchString = "";
+                var userData = {};
+
+                var line1 = "";
+                var city = "";
+                var state = "";
+                var postalcode = "";
+                var resultName = "";
+                var resultId = "";
+                var contactId = "";
+                var parent = "";
+                var reason = "";
+
+                if (entityType == "account") {
+                    line1 = result.attributes["address1_line1"] ? result.attributes["address1_line1"].value : "-";
+                    city = result.attributes["address1_city"] ? result.attributes["address1_city"].value : "-";
+                    state = result.attributes["address1_stateorprovince"] ? result.attributes["address1_stateorprovince"].value : "-";
+                    postalcode = result.attributes["address1_postalcode"] ? result.attributes["address1_postalcode"].value : "-";
+
+                    resultName = result.attributes["name"] ? result.attributes["name"].value : "";
+                    resultId = result.attributes["accountid"] ? result.attributes["accountid"].value : "";
+
+                    searchString = line1 + "," + city + "," + state + "," + postalcode;
+                    userData = { name: resultName, id: resultId, address: searchString, type: entityType, parent: parent };
+                }
+                geocodeRequest(searchString, userData);
+            }
+        }
+
+        function geocodeRequest(where, userData) {
+            createSearchManager();
+            var request =
+            {
+                where: where,
+                count: 5,
+                bounds: map.getBounds(),
+                callback: onGeocodeSuccess,
+                errorCallback: function (result, userData) { },
+                userData: userData
+            };
+            searchManager.geocode(request);
+        }
+
+        // LOADING TRAINERS
+
+        function loadTrainers() {
+            var order = window.parent.Xrm.Page.data.entity.getId();
+            var productid = window.parent.Xrm.Page.getAttribute("pdt_course").getValue() != null ? window.parent.Xrm.Page.getAttribute("pdt_course").getValue()[0].id : null;
+            if (productid == null || productid == undefined) return;
+
+            var currentDate = new Date();//.format("yyyy-MM-dd");
+            var dd = currentDate.getDate();
+            var mm = currentDate.getMonth() + 1;
+            var yyyy = currentDate.getFullYear();
+            currentDate = yyyy + "-" + mm + "-" + dd;
+
+            var courseStartDate = window.parent.Xrm.Page.getAttribute("pdt_coursestartdate").getValue();
+
+            if (courseStartDate != null) {
+                currentDate = courseStartDate.format("yyyy-MM-dd");//formattedDate(courseStartDate);
+            }
+            var trainers = null;
+
+            // Unexpired qualified trainers
+            var myfetchXml = "<fetch distinct='true' mapping='logical' >" +
+                            "<entity name='contact' >" +
+                              "<attribute name='contactid' alias='contactid' />" +
+                              "<attribute name='parentcustomerid' alias='company' />" +
+                              "<attribute name='fullname' alias='name' />" +
+                              "<attribute name='address1_city' alias='city' />" +
+                              "<attribute name='address1_line1' alias='line1' />" +
+                              "<attribute name='address1_stateorprovince' alias='state' />" +
+                              "<attribute name='address1_postalcode' alias='postcode' />" +
+                              "<filter type='and' >" +
+                                "<condition attribute='customertypecode' operator='eq' value='749700000' />" +
+                                "<condition attribute='pdt_pertempsapprovedtrainer' operator='eq' value='749700000' />" +
+                              "</filter>" +
+                              "<link-entity name='pdt_trainerqualification' from='pdt_trainer' to='contactid' alias='tq' >" +
+                                "<filter>" +
+                                  "<condition attribute='pdt_expirydate' operator='on-or-after' value='" + currentDate + "' />" +
+                                "</filter>" +
+                                "<link-entity name='pdt_qualification' from='pdt_qualificationid' to='pdt_qualification' alias='q' >" +
+                                  "<link-entity name='pdt_product_pdt_qualification' from='pdt_qualificationid' to='pdt_qualificationid' intersect='true' >" +
+                                    "<filter type='and' >" +
+                                      "<condition attribute='productid' operator='eq' value='" + productid + "' />" +
+                                    "</filter>" +
+                                  "</link-entity>" +
+                                "</link-entity>" +
+                              "</link-entity>" +
+                              "<link-entity name='pdt_trainerscalender' from='pdt_trainer' to='contactid' link-type='outer' >" +
+                              "<attribute name='pdt_type' alias='type' />" +
+                              "<attribute name='pdt_starttime' alias='start' />" +
+                              "<attribute name='pdt_endtime' alias='end' />" +
+                              "<filter type='or' >" +
+                                "<condition attribute='pdt_orderid' operator='null' />" +
+                                "<condition attribute='pdt_orderid' operator='eq' value='" + order + "' />" +
+                              "</filter>" +
+                            "</link-entity>" +
+                            "</entity>" +
+                          "</fetch>";
+
+            var results = XrmServiceToolkit.Soap.Fetch(myfetchXml);
+
+            if (results.length > 0)
+                trainers = getTrainers(results);
+
+            if (trainers != null)
+                addTrainerPins(trainers);
+        }
+
+        function getTrainers(results) {
+            if (results == null || results.length == 0) return;
+
+            var trainers = {};
+            var userData = {};
+
+            for (i = 0; i < results.length; i++) {
+                var result = results[i];
+
+
+                var guid = result.attributes["contactid"] ? result.attributes["contactid"].value : "";
+
+                var line1 = result.attributes["line1"] ? result.attributes["line1"].value : "-";
+                var city = result.attributes["city"] ? result.attributes["city"].value : "-";
+                var state = result.attributes["state"] ? result.attributes["state"].value : "-";
+                var postalcode = result.attributes["postcode"] ? result.attributes["postcode"].value : "-";
+                var resultName = result.attributes["name"] ? result.attributes["name"].value : "";
+                var parentCompany = result.attributes["company"] ? result.attributes["company"].id : null;
+                var searchString = line1 + "," + city + "," + state + "," + postalcode;
+
+                var ctype = result.attributes["type"] ? result.attributes["type"].value : 0;
+                var recType = result.attributes["type"] ? result.attributes["type"].formattedValue : "";
+                var start = result.attributes["start"] ? result.attributes["start"] : "";
+                var end = result.attributes["end"] ? result.attributes["end"] : "";
+                var trainer = {};
+
+
+
+                if (trainers[guid] == undefined) {
+
+                    trainer = {
+                        name: resultName,
+                        id: guid,
+                        type: "contact",
+                        company: parentCompany,
+                        line: line1,
+                        city: city,
+                        state: state,
+                        postalcode: postalcode,
+                        available: false,
+                        calType: ctype,
+                        address: ""
+                    };
+                    trainers[guid] = trainer;
+                }
+
+                if (ctype == 0) {
+
+                    trainers[guid].address = "No Calendar Records Available";
+                }
+                else {
+                    var aval =isTrainerAvailable(start.value, end.value);
+                    if (aval) {
+                        trainers[guid].available = true;
+                        if (trainers[guid].address == "")
+                            trainers[guid].address = recType + ": " + start.formattedValue + " - " + end.formattedValue;
+                        else 
+                            trainers[guid].address = trainers[guid].address + "<br />" + recType + ": " + start.formattedValue + " - " + end.formattedValue;                       
+                    }
+                }
+            }
+            return trainers;
+        }
+
+        function isTrainerAvailable(startDate, endDate) {
+
+            var trafficSignal = false;
+            if (startDate == "" || endDate == "") return trafficSignal;
+            var option1 = window.parent.Xrm.Page.getAttribute("pdt_dateoption1").getValue() ? new Date(window.parent.Xrm.Page.getAttribute("pdt_dateoption1").getValue().toString()) : null;
+            var option2 = window.parent.Xrm.Page.getAttribute("pdt_dateoption2").getValue() ? new Date(window.parent.Xrm.Page.getAttribute("pdt_dateoption2").getValue().toString()) : null;
+            var option3 = window.parent.Xrm.Page.getAttribute("pdt_dateoption3").getValue() ? new Date(window.parent.Xrm.Page.getAttribute("pdt_dateoption3").getValue().toString()) : null;
+            var courseStart = window.parent.Xrm.Page.getAttribute("pdt_coursestartdate").getValue() ? new Date(window.parent.Xrm.Page.getAttribute("pdt_coursestartdate").getValue()) : null;
+
+            var start = new Date(startDate);
+            var end = new Date(endDate);
+
+            if (option1 != null)
+                if ((start.getTime() <= option1.getTime()) && (end.getTime() >= option1.getTime()))
+                    trafficSignal = true;
+            if (option2 != null)
+                if ((start.getTime() <= option2.getTime()) && (end.getTime() >= option2.getTime()))
+                    trafficSignal = true;
+            if (option3 != null)
+                if ((start.getTime() <= option3.getTime()) && (end.getTime() >= option3.getTime()))
+                    trafficSignal = true;
+            if (courseStart != null)
+                if ((start.getTime() <= courseStart.getTime()) && (end.getTime() >= courseStart.getTime()))
+                    trafficSignal = true;
+
+            return trafficSignal;
+
+        }
+
+        /*
+              function getTrainerDateFetchString() {
+                  var fields = ["pdt_dateoption1", "pdt_dateoption2", "pdt_dateoption3", "pdt_coursestartdate"];
+                  var fetchOutput = "";
+
+                  for (i = 0; i < fields.length; i++) {
+                      if (window.parent.Xrm.Page.getAttribute(fields[i])) {
+                          if (window.parent.Xrm.Page.getAttribute(fields[i]).getValue() != null) {
+
+                              myDate = new Date(window.parent.Xrm.Page.getAttribute(fields[i]).getValue());
+
+                              var output = (myDate.getFullYear() + "-" + (myDate.getMonth() + 1) + "-" + myDate.getDate());
+
+                              fetchOutput += "<condition attribute='pdt_starttime' operator='on' value='" + output + "' />";
+
+                          }
+                      }
+                  }
+                  if (fetchOutput != "")
+                      fetchOutput = " <filter type='or' >" + fetchOutput + " </filter>";
+
+                  return fetchOutput;
+              }
+            */
+        function addTrainerPins(trainers) {
+
+            if (trainers == null) return;
+
+            Object.keys(trainers).forEach(function (key, index) {
+                // key: the name of the object key
+                // index: the ordinal position of the key within the object
+                var trainer = trainers[key];
+                var searchString = "";
+                searchString = trainer.line + "," + trainer.city + "," + trainer.state + "," + trainer.postalcode;
+                // userData = { name:trainer.name, id:trainer.id, address: trainer.address, type:trainer.type, parent: trainer.parent, availability: trainer.availability };
+                geocodeRequest(searchString, trainer);
+            });
+
+        }
+
+        function onGeocodeSuccess(result, userData) {
+            var url = parent.window.Xrm.Page.context.getClientUrl();
+            if (result) {
+                var topResult = result.results && result.results[0];
+                if (topResult) {
+                    var pushpin;
+                    if (userData.type == "account") {
+
+                        pushpin = new window.Microsoft.Maps.Pushpin(topResult.location, { icon: url + "//WebResources/pdt_/Images/trainingsite.png", width: 32, height: 32 });
+                        locs.push(topResult.location);
+                        map.entities.push(pushpin);
+                    } else
+                        if (userData.type == "contact") {
+
+                            if (userData.calType == 0)
+                                pushpin = new window.Microsoft.Maps.Pushpin(topResult.location, { icon: url + "//WebResources/pdt_/Images/red.png", width: 16, height: 16 });
+                            else if (userData.available)
+                                pushpin = new window.Microsoft.Maps.Pushpin(topResult.location, { icon: url + "//WebResources/pdt_/Images/green.png", width: 16, height: 16 });
+                            else
+                                pushpin = new window.Microsoft.Maps.Pushpin(topResult.location, { icon: url + "//WebResources/pdt_/Images/amber.png", width: 16, height: 16 });
+
+                            locs.push(topResult.location);
+                            map.entities.push(pushpin);
+
+                            map.entities.push(new window.Microsoft.Maps.Infobox(topResult.location,
+                       {
+                           title: userData.name,
+                           pushpin: pushpin,
+                           description: userData.address,
+                           actions: [
+                             {
+                                 label: "Select Trainer",
+                                 eventHandler: function () {
+
+                                     window.parent.Xrm.Utility.confirmDialog("Adding Trainer Request to :" + userData.name, function () {
+                                         var nc = new XrmServiceToolkit.Soap.BusinessEntity("pdt_trainerscalender");
+                                         //nc.attributes["new_course"] = { id: window.parent.Xrm.Page.data.entity.getId(), logicalName: "new_course", type: "EntityReference" };
+                                         nc.attributes["pdt_trainer"] = { id: userData.id, logicalName: "contact", type: "EntityReference" };
+                                         nc.attributes["pdt_name"] = userData.name;
+                                         nc.attributes["pdt_trainercompany"] = { id: userData.company, logicalName: "contact", type: "EntityReference" };
+
+                                         nc.attributes["pdt_type"] = { value: 749700001, type: "OptionSetValue" };
+                                         nc.attributes["statuscode"] = { value: 749700004, type: "OptionSetValue" };
+
+                                         nc.attributes["pdt_orderid"] = { id: window.parent.Xrm.Page.data.entity.getId(), logicalName: "salesorder", type: "EntityReference" }
+
+                                         // nc.attributes["pdt_trainercompany"] =  window.parent.Xrm.Page.getAttribute("pdt_trainingprovidercompany") ? window.parent.Xrm.Page.getAttribute("pdt_trainingprovidercompany").getValue() : null;
+                                         nc.attributes["pdt_starttime"] = window.parent.Xrm.Page.getAttribute("pdt_coursestartdate") ? window.parent.Xrm.Page.getAttribute("pdt_coursestartdate").getValue() : null;
+                                         nc.attributes["pdt_endtime"] = window.parent.Xrm.Page.getAttribute("pdt_courseenddate") ? window.parent.Xrm.Page.getAttribute("pdt_courseenddate").getValue() : null;
+                                         nc.attributes["pdt_trainingsite"] = { id: window.parent.Xrm.Page.getAttribute("pdt_trainingsite").getValue()[0].id, logicalName: "account", type: "EntityReference" };
+                                         var ncId;
+
+
+
+
+                                         var rows = window.parent.Xrm.Page.getControl("sg_trainers").getGrid().getRows();
+                                         var exists = false;
+
+                                         rows.forEach(function (row, i) {
+                                             var attb = row.getData().getEntity().getAttributes().getAll();
+                                             var id = row.getData().getEntity().getAttributes().get("pdt_trainer").getValue()[0].id;
+                                             loop: {
+                                                 if (id.replace(/[{}]/g, "").toLowerCase() === userData.id.replace(/[{}]/g, "").toLowerCase()) {
+                                                     window.Xrm.Utility.confirmDialog("Trainer was alredy requested");
+                                                     exists = true;
+                                                     break loop;
+                                                 }
+                                             }
+                                         });
+
+                                         if (!exists) {
+                                             ncId = XrmServiceToolkit.Soap.Create(nc);
+                                             window.parent.Xrm.Page.getControl("sg_trainers").refresh();
+                                         }
+
+
+                                     }, function () {
+
+                                         // on error
+                                     });
+                                 }
+                             }
+                           ],
+                           titleClickHandler: function () {
+                               window.parent.Xrm.Utility.openEntityForm(userData.type, userData.id, null);
+                           }
+                       }));
+                        }
+                }
+            }
+        }
+    </script>
+</head>
+<body onload="GetMap();" onsave="GetMap()">
+    <div><p><a href='#' class='buttonlink' style="float:right" onclick="GetMap()">Refresh Map</a></p></div>
+    <br>
+    <div id='mapDiv' class="mymap" style="position:absolute; width:100%; height:90%;"></div>
+    
+</body>
+</html>
