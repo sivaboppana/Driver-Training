@@ -47,21 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ILMergeOrder.txt" />
-    <Content Include="images\amber.png" />
-    <Content Include="images\bluelogo.jpg" />
-    <Content Include="images\bluelogo2.png" />
-    <Content Include="images\calendar16.png" />
-    <Content Include="images\calendar32.png" />
-    <Content Include="images\feedback16.png" />
-    <Content Include="images\feedback32.png" />
-    <Content Include="images\green.png" />
-    <Content Include="images\invoicebilled16.png" />
-    <Content Include="images\qualification16.png" />
-    <Content Include="images\qualification32.png" />
-    <Content Include="images\red.png" />
-    <Content Include="images\refresh16.png" />
-    <Content Include="images\refresh32.png" />
     <Content Include="scripts\ChartMap\pdt_chartMapConfig.xml" />
     <Content Include="scripts\Toolkit\jquery.js" />
     <Content Include="scripts\Toolkit\json2.js" />
@@ -78,11 +63,6 @@
     <Content Include="scripts\Form\TrainerCalenderScript.js" />
     <Content Include="scripts\Form\TrainerQualification.js" />
     <Content Include="scripts\Form\TrainingRequestScript.js" />
-    <Content Include="images\sequncenumber16.png" />
-    <Content Include="images\sequncenumber32.png" />
-    <Content Include="images\submit16.png" />
-    <Content Include="images\submit32.png" />
-    <Content Include="images\trainingsite.png" />
     <Content Include="Web.config" />
     <Content Include="scripts\Toolkit\XrmServiceToolkit.js" />
     <Content Include="scripts\Toolkit\XrmServiceToolkit.min.js" />
@@ -95,12 +75,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="css\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="packages.config" />
-    <Content Include="ILMerge.props" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
