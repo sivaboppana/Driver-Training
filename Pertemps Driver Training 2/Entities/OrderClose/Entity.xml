@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Entity>
+  <Name LocalizedName="Order Close" OriginalName="Order Close">OrderClose</Name>
+  <ObjectTypeCode>4209</ObjectTypeCode>
+  <EntityInfo>
+    <entity Name="OrderClose" unmodified="1">
+      <attributes />
+    </entity>
+  </EntityInfo>
+  <FormXml />
+  <RibbonDiffXml />
+</Entity>

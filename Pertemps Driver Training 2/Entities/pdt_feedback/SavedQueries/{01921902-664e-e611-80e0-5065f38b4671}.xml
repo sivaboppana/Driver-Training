@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedquery>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <isquickfindquery>0</isquickfindquery>
+  <isprivate>0</isprivate>
+  <isdefault>0</isdefault>
+  <returnedtypecode>10011</returnedtypecode>
+  <savedqueryid>{01921902-664e-e611-80e0-5065f38b4671}</savedqueryid>
+  <layoutxml>
+    <grid name="resultset" object="10011" jump="pdt_name" select="1" preview="1" icon="1">
+      <row name="result" id="pdt_feedbackid">
+        <cell name="pdt_name" width="150" />
+        <cell name="a_8de7dfef24b9e51180d6d89d67639d08.pdt_employeenumber" width="100" disableSorting="1" />
+        <cell name="a_8de7dfef24b9e51180d6d89d67639d08.fullname" width="100" disableSorting="1" />
+        <cell name="a_a220e9c8c6bae51180d7d89d67634e48.pdt_coursestartdate" width="100" disableSorting="1" />
+        <cell name="a_4e02afda2fe1e51180e0d89d67634e48.name" width="100" disableSorting="1" />
+        <cell name="pdt_passfailed" width="100" />
+        <cell name="pdt_riskscore" width="100" />
+        <cell name="statuscode" width="100" />
+        <cell name="a_a220e9c8c6bae51180d7d89d67634e48.customerid" width="100" disableSorting="1" />
+        <cell name="a_e49a800030e1e51180e0d89d67634e48.pdt_costcentre" width="100" disableSorting="1" />
+        <cell name="a_a220e9c8c6bae51180d7d89d67634e48.pdt_trainingsite" width="100" disableSorting="1" />
+      </row>
+    </grid>
+  </layoutxml>
+  <querytype>0</querytype>
+  <fetchxml>
+    <fetch version="1.0" output-format="xml-platform" mapping="logical">
+      <entity name="pdt_feedback">
+        <attribute name="pdt_name" />
+        <order attribute="pdt_name" descending="false" />
+        <link-entity alias="a_8de7dfef24b9e51180d6d89d67639d08" name="contact" from="contactid" to="pdt_delegate" link-type="outer" visible="false">
+          <attribute name="pdt_employeenumber" />
+          <attribute name="fullname" />
+        </link-entity>
+        <link-entity alias="a_4e02afda2fe1e51180e0d89d67634e48" name="product" from="productid" to="pdt_courseid" link-type="outer" visible="false">
+          <attribute name="name" />
+        </link-entity>
+        <attribute name="statuscode" />
+        <attribute name="pdt_riskscore" />
+        <attribute name="pdt_passfailed" />
+        <link-entity alias="a_a220e9c8c6bae51180d7d89d67634e48" name="salesorder" from="salesorderid" to="pdt_order" link-type="outer" visible="false">
+          <attribute name="pdt_coursestartdate" />
+          <attribute name="pdt_trainingsite" />
+          <attribute name="customerid" />
+        </link-entity>
+        <link-entity alias="a_e49a800030e1e51180e0d89d67634e48" name="account" from="accountid" to="pdt_customerid" link-type="outer" visible="false">
+          <attribute name="pdt_costcentre" />
+        </link-entity>
+        <attribute name="pdt_feedbackid" />
+      </entity>
+    </fetch>
+  </fetchxml>
+  <IntroducedVersion>1.1.0.2</IntroducedVersion>
+  <LocalizedNames>
+    <LocalizedName description="Delivary Data for MI" languagecode="1033" />
+  </LocalizedNames>
+</savedquery>

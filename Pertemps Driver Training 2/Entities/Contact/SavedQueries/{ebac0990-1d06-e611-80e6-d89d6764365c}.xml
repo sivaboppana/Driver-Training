@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedquery>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <isquickfindquery>0</isquickfindquery>
+  <isprivate>0</isprivate>
+  <isdefault>0</isdefault>
+  <returnedtypecode>2</returnedtypecode>
+  <savedqueryid>{ebac0990-1d06-e611-80e6-d89d6764365c}</savedqueryid>
+  <layoutxml>
+    <grid name="resultset" object="2" jump="fullname" select="1" preview="1" icon="1">
+      <row name="result" id="contactid">
+        <cell name="fullname" width="150" />
+      </row>
+    </grid>
+  </layoutxml>
+  <querytype>0</querytype>
+  <fetchxml>
+    <fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="true">
+      <entity name="contact">
+        <attribute name="fullname" />
+        <order attribute="fullname" descending="false" />
+        <link-entity name="pdt_trainerqualification" from="pdt_trainer" to="contactid" alias="aa">
+          <link-entity name="pdt_qualification" from="pdt_qualificationid" to="pdt_qualification" alias="ab">
+            <link-entity name="pdt_product_pdt_qualification" from="pdt_qualificationid" to="pdt_qualificationid" visible="false" intersect="true">
+              <link-entity name="product" from="productid" to="productid" alias="ac"></link-entity>
+            </link-entity>
+          </link-entity>
+        </link-entity>
+        <attribute name="contactid" />
+      </entity>
+    </fetch>
+  </fetchxml>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <LocalizedNames>
+    <LocalizedName description="Course Can Deliver" languagecode="1033" />
+  </LocalizedNames>
+</savedquery>

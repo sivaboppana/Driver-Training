@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedquery>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <isquickfindquery>0</isquickfindquery>
+  <isprivate>0</isprivate>
+  <isdefault>0</isdefault>
+  <returnedtypecode>10011</returnedtypecode>
+  <savedqueryid>{a0c9842f-31b9-e511-80d6-d89d67639d08}</savedqueryid>
+  <layoutxml>
+    <grid name="resultset" object="10011" jump="pdt_name" select="1" preview="1" icon="1">
+      <row name="result" id="pdt_feedbackid">
+        <cell name="pdt_delegate" width="200" />
+        <cell name="statuscode" width="150" />
+        <cell name="pdt_feedbacksubmittedon" width="125" />
+      </row>
+    </grid>
+  </layoutxml>
+  <querytype>0</querytype>
+  <fetchxml>
+    <fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
+      <entity name="pdt_feedback">
+        <attribute name="pdt_delegate" />
+        <order attribute="pdt_delegate" descending="false" />
+        <order attribute="statuscode" descending="false" />
+        <filter type="and">
+          <condition attribute="statecode" operator="eq" value="0" />
+        </filter>
+        <attribute name="statuscode" />
+        <attribute name="pdt_feedbacksubmittedon" />
+        <attribute name="pdt_feedbackid" />
+      </entity>
+    </fetch>
+  </fetchxml>
+  <IntroducedVersion>1.0.0.2</IntroducedVersion>
+  <LocalizedNames>
+    <LocalizedName description="Delegate Feedback" languagecode="1033" />
+  </LocalizedNames>
+</savedquery>

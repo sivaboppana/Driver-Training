@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<systemform>
+  <formid>{e701e61b-2c7b-4743-a3ee-435020281234}</formid>
+  <IntroducedVersion>1.1.0.1</IntroducedVersion>
+  <FormPresentation>1</FormPresentation>
+  <FormActivationState>1</FormActivationState>
+  <form maxWidth="1900">
+    <tabs>
+      <tab id="{405b0181-5864-4fe4-9b53-8a9d4de4d3e3}" name="tab_1" showlabel="false" locklevel="0" expanded="true">
+        <labels>
+          <label description="Tab" languagecode="1033" />
+        </labels>
+        <columns>
+          <column width="35%">
+            <sections>
+              <section id="{a9c467a9-6733-419e-894e-ceda9ebfab51}" name="tab_1_column_1_section_1" columns="1" showlabel="false" showbar="true" IsUserDefined="0" locklevel="0" labelwidth="115" celllabelalignment="Left" celllabelposition="Left">
+                <labels>
+                  <label description="section" languagecode="1033" />
+                </labels>
+                <rows>
+                  <row>
+                    <cell id="{07e86176-1a82-1ad4-83aa-9a146e8eed77}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Name" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_name" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="pdt_name" disabled="true" uniqueid="{d8d47d50-1d0e-c665-2ebe-b67ea9234843}" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{e2c25d6b-b0ba-4114-74cc-13e69e484bbb}" showlabel="true" locklevel="1">
+                      <labels>
+                        <label description="Training Request" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_order" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_order" disabled="true" uniqueid="{c21b8ce7-a811-b536-280a-0c86e76911bb}">
+                        <parameters>
+                          <AutoResolve>true</AutoResolve>
+                          <DisableMru>false</DisableMru>
+                          <DisableQuickFind>false</DisableQuickFind>
+                          <DisableViewPicker>false</DisableViewPicker>
+                          <DefaultViewId>{ABF9E11D-08A5-4F4D-966B-7335A924E9C7}</DefaultViewId>
+                          <AllowFilterOff>false</AllowFilterOff>
+                        </parameters>
+                      </control>
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{01be438d-78b8-eae0-b4e7-6bde4aeb1a29}" showlabel="true" locklevel="1">
+                      <labels>
+                        <label description="Customer" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_customerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_customerid" disabled="true" uniqueid="{0dd2b40d-b9d4-5ead-2b34-cc6c18333972}">
+                        <parameters>
+                          <AutoResolve>true</AutoResolve>
+                          <DisableMru>false</DisableMru>
+                          <DisableQuickFind>false</DisableQuickFind>
+                          <DisableViewPicker>false</DisableViewPicker>
+                          <DefaultViewId>{A9AF0AB8-861D-4CFA-92A5-C6281FED7FAB}</DefaultViewId>
+                          <AllowFilterOff>false</AllowFilterOff>
+                        </parameters>
+                      </control>
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{d385780c-aa1b-c332-2528-000b417cd4c0}" showlabel="true" locklevel="1">
+                      <labels>
+                        <label description="Course" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_courseid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_courseid" disabled="true" uniqueid="{14da0246-ecc8-3b39-ebe5-cc59c0d957d0}">
+                        <parameters>
+                          <AutoResolve>true</AutoResolve>
+                          <DisableMru>false</DisableMru>
+                          <DisableQuickFind>false</DisableQuickFind>
+                          <DisableViewPicker>false</DisableViewPicker>
+                          <DefaultViewId>{8BA625B2-6A2A-4735-BAB2-0C74AE8442A4}</DefaultViewId>
+                          <AllowFilterOff>false</AllowFilterOff>
+                        </parameters>
+                      </control>
+                    </cell>
+                  </row>
+                </rows>
+              </section>
+            </sections>
+          </column>
+          <column width="35%">
+            <sections>
+              <section id="{fc48986b-81c2-40c9-bae5-5f5c1c2219ca}" name="tab_1_column_2_section_1" columns="1" showlabel="false" showbar="true" IsUserDefined="0" locklevel="0" labelwidth="115" celllabelalignment="Left" celllabelposition="Left">
+                <labels>
+                  <label description="section" languagecode="1033" />
+                </labels>
+                <rows>
+                  <row>
+                    <cell id="{4605dc98-b831-0bb5-ad16-e3c9b594920a}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Delegate" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_delegate" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_delegate" disabled="false" uniqueid="{a6520b46-467c-112e-4388-001b442352a0}">
+                        <parameters>
+                          <AutoResolve>true</AutoResolve>
+                          <DisableMru>false</DisableMru>
+                          <DisableQuickFind>false</DisableQuickFind>
+                          <DisableViewPicker>false</DisableViewPicker>
+                          <DefaultViewId>{A2D479C5-53E3-4C69-ADDD-802327E67A0D}</DefaultViewId>
+                          <AllowFilterOff>false</AllowFilterOff>
+                        </parameters>
+                      </control>
+                    </cell>
+                  </row>
+                </rows>
+              </section>
+            </sections>
+          </column>
+          <column width="30%">
+            <sections>
+              <section id="{199b5809-c27c-416a-8af0-87d5eb089faf}" name="tab_1_column_3_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0">
+                <labels>
+                  <label description="section" languagecode="1033" />
+                </labels>
+                <rows>
+                  <row>
+                    <cell id="{212f6b37-7190-49f6-ad35-a888a6b8ca1c}" showlabel="false">
+                      <labels>
+                        <label description="" languagecode="1033" />
+                      </labels>
+                    </cell>
+                  </row>
+                </rows>
+              </section>
+            </sections>
+          </column>
+        </columns>
+      </tab>
+    </tabs>
+    <formLibraries>
+      <Library name="pdt_/Toolkit/XrmServiceToolkit.min.js" libraryUniqueId="{c64640d8-d737-82e8-78ba-cd9c50818a1a}" />
+      <Library name="pdt_/Form/DelegateFeedbackScript.js" libraryUniqueId="{d3c30159-4e76-2eb8-db9b-6c7e4c895914}" />
+    </formLibraries>
+    <events>
+      <event name="onload" application="false" active="false">
+        <Handlers>
+          <Handler functionName="delegateFilter" libraryName="pdt_/Form/DelegateFeedbackScript.js" handlerUniqueId="{667a147d-ea43-592e-8b6c-070e496ac004}" enabled="true" parameters="" passExecutionContext="false" />
+        </Handlers>
+      </event>
+      <event name="onchange" application="false" active="false" attribute="pdt_delegate">
+        <Handlers>
+          <Handler functionName="onDelegateExists" libraryName="pdt_/Form/DelegateFeedbackScript.js" handlerUniqueId="{a41b811e-3e45-4703-d7d9-2004d5e15e0a}" enabled="true" parameters="" passExecutionContext="false" />
+        </Handlers>
+      </event>
+    </events>
+    <controlDescriptions />
+    <DisplayConditions Order="1">
+      <Role Id="{627090ff-40a3-4053-8790-584edc5be201}" />
+      <Role Id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+    </DisplayConditions>
+  </form>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <LocalizedNames>
+    <LocalizedName description="Quick Feedback" languagecode="1033" />
+  </LocalizedNames>
+</systemform>

@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<systemform>
+  <formid>{fe493889-4b24-44c4-85d7-eed39b0b68a6}</formid>
+  <IntroducedVersion>1.1.0.1</IntroducedVersion>
+  <FormPresentation>0</FormPresentation>
+  <FormActivationState>1</FormActivationState>
+  <form hasmargin="false" shownavigationbar="false">
+    <ancestor id="{707fc57b-c5e6-471b-a180-e37ed28a38e2}" />
+    <tabs showlabels="false">
+      <tab name="general" verticallayout="true" id="{bdcab9c4-24c2-4853-a201-6aa01db10ae5}" IsUserDefined="0" labelid="{dba7205b-e164-4b61-9b35-7da698d4d6c9}" locklevel="0" expanded="true" showlabel="false">
+        <labels>
+          <label description="General" languagecode="1033" />
+        </labels>
+        <columns>
+          <column width="100%">
+            <sections>
+              <section name="information" labelwidth="170" id="{54e1a9ca-d4be-4e4d-b7f4-e670b899f648}" IsUserDefined="0" showlabel="false" showbar="true" labelid="{12e2d967-9b76-47d8-bcff-f2b09125ffce}" columns="1" locklevel="0" celllabelalignment="Left" celllabelposition="Left">
+                <labels>
+                  <label description="MANAGER DETAILS" languagecode="1033" />
+                </labels>
+                <rows>
+                  <row>
+                    <cell id="{64346500-b4fa-41ea-96fd-4e0aaca4c81d}" showlabel="false" locklevel="0" labelid="{59a14b61-9130-4417-97ee-69c60874322c}" visible="false">
+                      <labels>
+                        <label description="Full Name" languagecode="1033" />
+                      </labels>
+                      <control id="fullname" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="fullname" disabled="false" uniqueid="{d4d30054-e950-a7d3-c398-026475a56b1b}" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{a945ecf7-fbf8-41c6-a80e-52378f914222}" showlabel="true" locklevel="0" labelid="{7d346116-15c8-473c-8c1c-7b07882309e5}" visible="false">
+                      <labels>
+                        <label description="Company" languagecode="1033" />
+                      </labels>
+                      <control id="parentcustomerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="parentcustomerid" disabled="false" uniqueid="{bd361014-da10-a3ad-e1b5-3d564455d26a}">
+                        <parameters>
+                          <AutoResolve>true</AutoResolve>
+                          <DisableMru>false</DisableMru>
+                        </parameters>
+                      </control>
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{81747d1f-dd2b-4ea8-be83-81fd5d7f00d3}" showlabel="true" locklevel="0" labelid="{71b96b4b-7c2b-481f-9342-73a1e95fa66a}">
+                      <labels>
+                        <label description="Email" languagecode="1033" />
+                      </labels>
+                      <control id="emailaddress1" classid="{ADA2203E-B4CD-49be-9DDF-234642B43B52}" datafieldname="emailaddress1" disabled="false" uniqueid="{8eec21a6-b173-367d-178b-d08ac77913b1}" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{ee7669b9-4619-4e47-b2e8-242448ede52b}" showlabel="true" locklevel="0" labelid="{0a8971a9-a881-40a1-9777-09b7f6083a03}">
+                      <labels>
+                        <label description="Mobile" languagecode="1033" />
+                      </labels>
+                      <control id="mobilephone" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="mobilephone" disabled="false" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{d072fd37-7bf4-4c4e-8bf1-4db6c2a3ce28}" showlabel="true" locklevel="0" labelid="{994ed0bf-e326-48da-a848-f4d3c8654d85}">
+                      <labels>
+                        <label description="Business" languagecode="1033" />
+                      </labels>
+                      <control id="telephone1" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="telephone1" disabled="false" />
+                    </cell>
+                  </row>
+                </rows>
+              </section>
+            </sections>
+          </column>
+        </columns>
+      </tab>
+    </tabs>
+    <DisplayConditions Order="2">
+      <Role Id="{627090ff-40a3-4053-8790-584edc5be201}" />
+      <Role Id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+    </DisplayConditions>
+  </form>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <LocalizedNames>
+    <LocalizedName description="Mgr Contact Details" languagecode="1033" />
+  </LocalizedNames>
+  <Descriptions>
+    <Description description="A form that displays the contact card." languagecode="1033" />
+  </Descriptions>
+</systemform>

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedquery>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>0</CanBeDeleted>
+  <isquickfindquery>0</isquickfindquery>
+  <isprivate>0</isprivate>
+  <isdefault>1</isdefault>
+  <returnedtypecode>10027</returnedtypecode>
+  <savedqueryid>{e56903d9-e17d-468c-aab5-afe4ecfd2418}</savedqueryid>
+  <layoutxml>
+    <grid name="" object="10027" jump="pdt_name" select="1" icon="1" preview="1">
+      <row name="pdt_qualification" id="pdt_qualificationid">
+        <cell name="pdt_name" width="300" />
+        <cell name="createdon" width="125" />
+      </row>
+    </grid>
+  </layoutxml>
+  <querytype>2</querytype>
+  <fetchxml>
+    <fetch version="1.0" mapping="logical">
+      <entity name="pdt_qualification">
+        <attribute name="pdt_qualificationid" />
+        <attribute name="pdt_name" />
+        <attribute name="createdon" />
+        <order attribute="pdt_name" descending="false" />
+        <filter type="and">
+          <condition attribute="statecode" operator="eq" value="0" />
+        </filter>
+      </entity>
+    </fetch>
+  </fetchxml>
+  <IntroducedVersion>1.1.0.0</IntroducedVersion>
+  <LocalizedNames>
+    <LocalizedName description="Qualification Associated View" languagecode="1033" />
+  </LocalizedNames>
+</savedquery>

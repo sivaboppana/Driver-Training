@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedquery>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>0</CanBeDeleted>
+  <isquickfindquery>0</isquickfindquery>
+  <isprivate>0</isprivate>
+  <isdefault>1</isdefault>
+  <returnedtypecode>10034</returnedtypecode>
+  <savedqueryid>{c8b2a848-1552-465a-b9c7-00d98fc9c6ef}</savedqueryid>
+  <layoutxml>
+    <grid name="resultset" object="10034" jump="pdt_name" select="1" icon="1" preview="1">
+      <row name="result" id="pdt_traininghistoryid">
+        <cell name="a_e7b10a15b358e61180e25065f38b4671.fullname" width="100" disableSorting="1" />
+        <cell name="a_e7b10a15b358e61180e25065f38b4671.address1_city" width="100" disableSorting="1" />
+        <cell name="a_e7b10a15b358e61180e25065f38b4671.address1_telephone1" width="100" disableSorting="1" />
+        <cell name="pdt_trainingrequest" width="100" />
+        <cell name="a_3284b98cb258e61180e25065f38b4671.pdt_courseid" width="100" disableSorting="1" />
+        <cell name="a_3284b98cb258e61180e25065f38b4671.pdt_coursestartdate" width="100" disableSorting="1" />
+        <cell name="pdt_lastcalendarentry" width="100" />
+        <cell name="a_9c7e9b477759e61180e35065f38adad1.createdon" width="100" disableSorting="1" />
+        <cell name="a_9c7e9b477759e61180e35065f38adad1.pdt_type" width="100" disableSorting="1" />
+      </row>
+    </grid>
+  </layoutxml>
+  <querytype>0</querytype>
+  <fetchxml>
+    <fetch version="1.0" mapping="logical">
+      <entity name="pdt_traininghistory">
+        <order attribute="pdt_trainingrequest" descending="false" />
+        <filter type="and">
+          <condition attribute="statecode" operator="eq" value="0" />
+        </filter>
+        <link-entity alias="a_9c7e9b477759e61180e35065f38adad1" name="pdt_trainerscalender" from="pdt_trainerscalenderid" to="pdt_lastcalendarentry" link-type="outer" visible="false">
+          <attribute name="pdt_type" />
+          <attribute name="createdon" />
+        </link-entity>
+        <link-entity alias="a_3284b98cb258e61180e25065f38b4671" name="salesorder" from="salesorderid" to="pdt_trainingrequest" link-type="outer" visible="false">
+          <attribute name="pdt_coursestartdate" />
+          <attribute name="pdt_courseid" />
+        </link-entity>
+        <attribute name="pdt_trainingrequest" />
+        <attribute name="pdt_lastcalendarentry" />
+        <link-entity alias="a_e7b10a15b358e61180e25065f38b4671" name="contact" from="contactid" to="pdt_trainer" link-type="outer" visible="false">
+          <attribute name="address1_telephone1" />
+          <attribute name="address1_city" />
+          <attribute name="fullname" />
+        </link-entity>
+        <attribute name="pdt_traininghistoryid" />
+      </entity>
+    </fetch>
+  </fetchxml>
+  <IntroducedVersion>1.1.0.2</IntroducedVersion>
+  <LocalizedNames>
+    <LocalizedName description="Active Training History" languagecode="1033" />
+  </LocalizedNames>
+</savedquery>

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedquery>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <isquickfindquery>0</isquickfindquery>
+  <isprivate>0</isprivate>
+  <isdefault>0</isdefault>
+  <returnedtypecode>10027</returnedtypecode>
+  <savedqueryid>{34c3907f-ebd3-e511-80d7-d89d67639d08}</savedqueryid>
+  <layoutxml>
+    <grid name="resultset" object="10027" jump="pdt_name" select="1" preview="1" icon="1">
+      <row name="result" id="pdt_qualificationid">
+        <cell name="pdt_qid" width="100" />
+        <cell name="pdt_name" width="150" />
+        <cell name="createdon" width="100" />
+      </row>
+    </grid>
+  </layoutxml>
+  <querytype>0</querytype>
+  <fetchxml>
+    <fetch version="1.0" output-format="xml-platform" mapping="logical">
+      <entity name="pdt_qualification">
+        <attribute name="pdt_name" />
+        <order attribute="pdt_name" descending="false" />
+        <attribute name="pdt_qid" />
+        <attribute name="createdon" />
+        <attribute name="pdt_qualificationid" />
+      </entity>
+    </fetch>
+  </fetchxml>
+  <IntroducedVersion>1.1.0.0</IntroducedVersion>
+  <LocalizedNames>
+    <LocalizedName description="Course Qualifications" languagecode="1033" />
+  </LocalizedNames>
+</savedquery>

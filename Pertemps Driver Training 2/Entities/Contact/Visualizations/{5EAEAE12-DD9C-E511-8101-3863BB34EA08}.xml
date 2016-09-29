@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<visualization>
+  <savedqueryvisualizationid>{5EAEAE12-DD9C-E511-8101-3863BB34EA08}</savedqueryvisualizationid>
+  <datadescription>{"AddressField":"address1_line1","BingMapScriptUrl":"ecn.dev.virtualearth.net\/mapcontrol\/mapcontrol.ashx?v=7.0&amp;mkt=en-CA","CenterLat":56.130366,"CenterLong":-106.346771,"CenterZoom":3,"CityField":"address1_city","CountryField":"address1_country","EntitySchemaName":"Contact","LatitudeField":"address1_latitude","LatitudeSchemaName":"Address1_Latitude","LongitudeField":"address1_longitude","LongitudeSchemaName":"Address1_Longitude","NameField":"fullname","NumericField":null,"PostCodeField":"address1_postalcode","StateField":"address1_stateorprovince","fetchXML":"&lt;fetch version=\"1.0\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\" count=\"250\" page=\"1\"&gt;&lt;entity name=\"contact\"&gt;&lt;attribute name=\"fullname\" \/&gt;&lt;attribute name=\"address1_city\" \/&gt;&lt;attribute name=\"address1_line1\" \/&gt;&lt;attribute name=\"address1_postalcode\" \/&gt;&lt;attribute name=\"address1_stateorprovince\" \/&gt;&lt;attribute name=\"address1_country\" \/&gt;&lt;attribute name=\"address1_latitude\" \/&gt;&lt;attribute name=\"address1_longitude\" \/&gt;&lt;order\/&gt;&lt;filter\/&gt;&lt;\/entity&gt;&lt;\/fetch&gt;"}</datadescription>
+  <presentationdescription>{"ClusterRadius":30,"ClusterTitle":"Multiple Contacts","Colour1":"rgba(128,000,128,10)","Colour2":"rgba(000,000,255,40)","Colour3":"rgba(000,128,000,80)","Colour4":"rgba(255,255,000,120)","Colour5":"rgba(255,000,000,150)","Deviations":0,"DynamicRadius":false,"EnableCaching":false,"EnableClustering":true,"HeatMapType":1,"Intensity":0,"IntensityCalculation":1,"IntensityRange":1,"MapType":1,"MaxValue":0,"MinValue":0,"Radius":0,"RadiusUnits":"pixels","ShowAllRecords":false}</presentationdescription>
+  <isdefault>0</isdefault>
+  <webresourcename>dd_chartMap.htm</webresourcename>
+  <LocalizedNames>
+    <LocalizedName description="Contact Locations" languagecode="1033" />
+  </LocalizedNames>
+  <Descriptions>
+    <Description description="Displays Contact locations on a Bing Map" languagecode="1033" />
+  </Descriptions>
+  <IsCustomizable>1</IsCustomizable>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <CanBeDeleted>1</CanBeDeleted>
+</visualization>

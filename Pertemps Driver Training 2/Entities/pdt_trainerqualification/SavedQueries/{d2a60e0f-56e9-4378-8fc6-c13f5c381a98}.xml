@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedquery>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>0</CanBeDeleted>
+  <isquickfindquery>0</isquickfindquery>
+  <isprivate>0</isprivate>
+  <isdefault>1</isdefault>
+  <returnedtypecode>10033</returnedtypecode>
+  <savedqueryid>{d2a60e0f-56e9-4378-8fc6-c13f5c381a98}</savedqueryid>
+  <layoutxml>
+    <grid name="" object="10033" jump="pdt_name" select="1" icon="1" preview="1">
+      <row name="pdt_trainerqualification" id="pdt_trainerqualificationid">
+        <cell name="pdt_name" width="300" />
+        <cell name="createdon" width="125" />
+      </row>
+    </grid>
+  </layoutxml>
+  <querytype>2</querytype>
+  <fetchxml>
+    <fetch version="1.0" mapping="logical">
+      <entity name="pdt_trainerqualification">
+        <attribute name="pdt_trainerqualificationid" />
+        <attribute name="pdt_name" />
+        <attribute name="createdon" />
+        <order attribute="pdt_name" descending="false" />
+        <filter type="and">
+          <condition attribute="statecode" operator="eq" value="0" />
+        </filter>
+      </entity>
+    </fetch>
+  </fetchxml>
+  <IntroducedVersion>1.1.0.1</IntroducedVersion>
+  <LocalizedNames>
+    <LocalizedName description="Trainer Qualification Associated View" languagecode="1033" />
+  </LocalizedNames>
+</savedquery>

@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedquery>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>0</CanBeDeleted>
+  <isquickfindquery>0</isquickfindquery>
+  <isprivate>0</isprivate>
+  <isdefault>1</isdefault>
+  <returnedtypecode>10011</returnedtypecode>
+  <savedqueryid>{6785bb4a-c18e-4686-a87b-f211ec60b6f2}</savedqueryid>
+  <layoutxml>
+    <grid name="resultset" object="10011" jump="pdt_name" select="1" icon="1" preview="1">
+      <row name="result" id="pdt_feedbackid">
+        <cell name="pdt_delegate" width="150" />
+        <cell name="statuscode" width="100" />
+        <cell name="pdt_order" width="100" />
+        <cell name="a_a220e9c8c6bae51180d7d89d67634e48.pdt_coursestartdate" width="100" disableSorting="1" />
+        <cell name="a_a220e9c8c6bae51180d7d89d67634e48.pdt_courseenddate" width="100" disableSorting="1" />
+        <cell name="pdt_isfeedbacksubmitted" width="100" />
+        <cell name="pdt_feedbacksubmittedon" width="100" />
+      </row>
+    </grid>
+  </layoutxml>
+  <querytype>0</querytype>
+  <fetchxml>
+    <fetch version="1.0" mapping="logical">
+      <entity name="pdt_feedback">
+        <order attribute="pdt_delegate" descending="false" />
+        <filter type="and">
+          <condition attribute="statecode" operator="eq" value="0" />
+        </filter>
+        <attribute name="pdt_delegate" />
+        <link-entity alias="a_a220e9c8c6bae51180d7d89d67634e48" name="salesorder" from="salesorderid" to="pdt_order" link-type="outer" visible="false">
+          <attribute name="pdt_coursestartdate" />
+          <attribute name="pdt_courseenddate" />
+        </link-entity>
+        <attribute name="pdt_isfeedbacksubmitted" />
+        <attribute name="pdt_feedbacksubmittedon" />
+        <attribute name="statuscode" />
+        <attribute name="pdt_order" />
+        <attribute name="pdt_feedbackid" />
+      </entity>
+    </fetch>
+  </fetchxml>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <LocalizedNames>
+    <LocalizedName description="Active Feedback" languagecode="1033" />
+  </LocalizedNames>
+</savedquery>

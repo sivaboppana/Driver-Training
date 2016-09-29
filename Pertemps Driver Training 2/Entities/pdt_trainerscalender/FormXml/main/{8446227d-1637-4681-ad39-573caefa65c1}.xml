@@ -1,0 +1,266 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<systemform>
+  <formid>{8446227d-1637-4681-ad39-573caefa65c1}</formid>
+  <IntroducedVersion>1.0.0.2</IntroducedVersion>
+  <FormPresentation>1</FormPresentation>
+  <FormActivationState>1</FormActivationState>
+  <form shownavigationbar="true" showImage="false" maxWidth="1900">
+    <tabs>
+      <tab verticallayout="true" id="{b3c66223-1986-4781-a8e3-9b2f1358f3b3}" IsUserDefined="1" name="{b3c66223-1986-4781-a8e3-9b2f1358f3b3}" locklevel="0" expanded="true" showlabel="true">
+        <labels>
+          <label description="Trainer Calendar" languagecode="1033" />
+        </labels>
+        <columns>
+          <column width="30%">
+            <sections>
+              <section showlabel="true" showbar="true" IsUserDefined="0" id="{4ca07935-87f8-4641-9103-5cdbdc9d14ae}" name="{4ca07935-87f8-4641-9103-5cdbdc9d14ae}" columns="1" locklevel="0" labelwidth="100" celllabelalignment="Left" celllabelposition="Left">
+                <labels>
+                  <label description="General" languagecode="1033" />
+                </labels>
+                <rows>
+                  <row>
+                    <cell id="{195ffa5b-a185-449a-a4b3-07cd4e2f9fab}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Name" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_name" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="pdt_name" uniqueid="{672e4278-2c30-5119-d476-7e2dc0654536}" disabled="true" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{26b67329-48e0-3339-3dda-747850249e32}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Status Reason" languagecode="1033" />
+                      </labels>
+                      <control id="statuscode" classid="{5D68B988-0661-4db2-BC3E-17598AD3BE6C}" datafieldname="statuscode" disabled="false" uniqueid="{80a9495a-57a6-86aa-737a-67102416799e}" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{7de704d4-0c81-7675-84b3-81261299084b}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Type" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_type" classid="{3EF39988-22BB-4f0b-BBBE-64B5A3748AEE}" datafieldname="pdt_type" disabled="false" uniqueid="{16c2d8b9-b937-1a1a-4d26-5d739a6eb4b2}" />
+                    </cell>
+                  </row>
+                </rows>
+              </section>
+            </sections>
+          </column>
+          <column width="30%">
+            <sections>
+              <section name="{b3c66223-1986-4781-a8e3-9b2f1358f3b3}_section_3" showlabel="true" showbar="true" locklevel="0" id="{6bb85be7-d3b7-aabd-9647-30d466456a10}" IsUserDefined="0" layout="varwidth" columns="1" labelwidth="100" celllabelalignment="Left" celllabelposition="Left">
+                <labels>
+                  <label description="Details" languagecode="1033" />
+                </labels>
+                <rows>
+                  <row>
+                    <cell id="{b2c8e140-a670-4326-9ec1-a28c29a39b50}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Trainer Company" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_trainercompany" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_trainercompany" disabled="false" uniqueid="{1c9b6cd6-ebe8-8767-a662-e5a56c4a7c1c}">
+                        <parameters>
+                          <AutoResolve>true</AutoResolve>
+                          <DisableMru>false</DisableMru>
+                          <DisableQuickFind>false</DisableQuickFind>
+                          <DisableViewPicker>false</DisableViewPicker>
+                          <DefaultViewId>{A9AF0AB8-861D-4CFA-92A5-C6281FED7FAB}</DefaultViewId>
+                          <AllowFilterOff>false</AllowFilterOff>
+                        </parameters>
+                      </control>
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{0cc0d15c-8ee0-d10e-4a43-45808cbddd4b}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Trainer" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_trainer" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_trainer" disabled="false" uniqueid="{47bedbd9-cd84-6150-84b5-97005a2a53c4}">
+                        <parameters>
+                          <AutoResolve>true</AutoResolve>
+                          <DisableMru>false</DisableMru>
+                          <DisableQuickFind>false</DisableQuickFind>
+                          <DisableViewPicker>false</DisableViewPicker>
+                          <DefaultViewId>{A2D479C5-53E3-4C69-ADDD-802327E67A0D}</DefaultViewId>
+                          <AllowFilterOff>false</AllowFilterOff>
+                        </parameters>
+                      </control>
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{4b9113e7-1396-85c5-1bd2-097168696488}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Training Site" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_trainingsite" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_trainingsite" disabled="false" uniqueid="{1890d30a-8a53-5164-8d7e-937bb741945e}" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{2b7be678-d89d-239a-b464-3d6aeea77671}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Start Time" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_starttime" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="pdt_starttime" disabled="false" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{68cc2b27-7872-6202-24dd-c4862e2c268b}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="End Time" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_endtime" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="pdt_endtime" disabled="false" />
+                    </cell>
+                  </row>
+                </rows>
+              </section>
+              <section showlabel="false" showbar="false" id="{41ef9e28-e5a2-4e39-9228-190322c0269c}" IsUserDefined="0" height="auto" name="{41ef9e28-e5a2-4e39-9228-190322c0269c}" columns="1" locklevel="0" labelwidth="115" celllabelalignment="Left" celllabelposition="Left" visible="false">
+                <labels>
+                  <label description="Notes" languagecode="1033" />
+                </labels>
+                <rows>
+                  <row>
+                    <cell showlabel="false" rowspan="15" auto="false" id="{fd3823de-b9f5-43c3-b674-bc81ca67905f}">
+                      <labels>
+                        <label description="Note Text" languagecode="1033" />
+                      </labels>
+                      <control id="notescontrol" classid="{06375649-c143-495e-a496-c962e5b4488e}">
+                        <parameters>
+                          <DefaultTabId>NotesTab</DefaultTabId>
+                        </parameters>
+                      </control>
+                    </cell>
+                  </row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row height="auto"></row>
+                </rows>
+              </section>
+            </sections>
+          </column>
+          <column width="40%">
+            <sections>
+              <section name="{b3c66223-1986-4781-a8e3-9b2f1358f3b3}_section_4" showlabel="true" showbar="true" locklevel="0" id="{a6084a0e-7c62-0a08-03e5-dd0e38815571}" IsUserDefined="0" layout="varwidth" columns="1" labelwidth="115" celllabelalignment="Left" celllabelposition="Left">
+                <labels>
+                  <label description="Notes" languagecode="1033" />
+                </labels>
+                <rows>
+                  <row>
+                    <cell id="{239189c7-570d-7a0b-76d4-a1ad25bc5724}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Decline Reason" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_declinereason" classid="{3EF39988-22BB-4f0b-BBBE-64B5A3748AEE}" datafieldname="pdt_declinereason" disabled="false" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{798d514d-2db5-04ac-b68c-03dd85b9089c}" showlabel="true" locklevel="0" rowspan="4">
+                      <labels>
+                        <label description="Description" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_description" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="pdt_description" disabled="false" uniqueid="{67e48b9a-c2a2-921e-3312-a252493ec766}" />
+                    </cell>
+                  </row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                </rows>
+              </section>
+            </sections>
+          </column>
+        </columns>
+      </tab>
+    </tabs>
+    <header id="{fde98a38-9d7c-40b8-bcbc-4b7c1be2ef67}" columns="111">
+      <rows>
+        <row>
+          <cell id="{61b36ce8-c5c0-1ee3-8c7d-36530048ec2e}" showlabel="true" locklevel="0">
+            <labels>
+              <label description="Order" languagecode="1033" />
+            </labels>
+            <control id="header_pdt_orderid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_orderid" disabled="false" />
+          </cell>
+          <cell id="{4751275b-c4ab-d8c2-bed6-82414cd6b250}" showlabel="true" locklevel="0">
+            <labels>
+              <label description="Trainer" languagecode="1033" />
+            </labels>
+            <control id="header_pdt_trainer" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_trainer" disabled="false" />
+          </cell>
+          <cell id="{9e848530-6cab-a57d-2c51-a562401abe31}" showlabel="true" locklevel="0">
+            <labels>
+              <label description="Owner" languagecode="1033" />
+            </labels>
+            <control id="header_ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" disabled="false" />
+          </cell>
+        </row>
+      </rows>
+    </header>
+    <Navigation>
+      <NavBar></NavBar>
+      <NavBarAreas>
+        <NavBarArea Id="Info">
+          <Titles>
+            <Title LCID="1033" Text="Common" />
+          </Titles>
+        </NavBarArea>
+        <NavBarArea Id="Sales">
+          <Titles>
+            <Title LCID="1033" Text="Sales" />
+          </Titles>
+        </NavBarArea>
+        <NavBarArea Id="Service">
+          <Titles>
+            <Title LCID="1033" Text="Service" />
+          </Titles>
+        </NavBarArea>
+        <NavBarArea Id="Marketing">
+          <Titles>
+            <Title LCID="1033" Text="Marketing" />
+          </Titles>
+        </NavBarArea>
+        <NavBarArea Id="ProcessCenter">
+          <Titles>
+            <Title LCID="1033" Text="Process Sessions" />
+          </Titles>
+        </NavBarArea>
+      </NavBarAreas>
+    </Navigation>
+    <controlDescriptions />
+    <formLibraries>
+      <Library name="pdt_/Toolkit/XrmServiceToolkit.js" libraryUniqueId="{ad1e77c8-6cc9-cd27-96e4-905ce4e2549c}" />
+      <Library name="pdt_/Form/DTUtility.js" libraryUniqueId="{c90de91c-8c31-cbb3-7db3-c956e1c95bb0}" />
+      <Library name="pdt_/Form/TrainerCalenderScript.js" libraryUniqueId="{46dd6d93-6343-4b82-0846-51397add3465}" />
+    </formLibraries>
+    <events>
+      <event name="onload" application="false" active="false">
+        <Handlers>
+          <Handler functionName="trainerFilter" libraryName="pdt_/Form/TrainerCalenderScript.js" handlerUniqueId="{384413c9-e4e8-9860-6679-336509ac39ec}" enabled="true" parameters="" passExecutionContext="false" />
+        </Handlers>
+      </event>
+      <event name="onchange" application="false" active="false" attribute="pdt_trainer">
+        <Handlers>
+          <Handler functionName="setName" libraryName="pdt_/Form/TrainerCalenderScript.js" handlerUniqueId="{a9c19a3d-3b83-41b4-2d44-2c2e49c22c27}" enabled="true" parameters="" passExecutionContext="false" />
+          <Handler functionName="onSelectedTrainerChange" libraryName="pdt_/Form/TrainerCalenderScript.js" handlerUniqueId="{2a04b94b-0bd5-3589-2c81-50472acb9710}" enabled="true" parameters="" passExecutionContext="false" />
+        </Handlers>
+      </event>
+    </events>
+  </form>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <LocalizedNames>
+    <LocalizedName description="Information" languagecode="1033" />
+  </LocalizedNames>
+  <Descriptions>
+    <Description description="A form for this entity." languagecode="1033" />
+  </Descriptions>
+</systemform>

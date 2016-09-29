@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedquery>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <isquickfindquery>0</isquickfindquery>
+  <isprivate>0</isprivate>
+  <isdefault>0</isdefault>
+  <returnedtypecode>2</returnedtypecode>
+  <savedqueryid>{f6f4d737-7f60-e611-80ee-5065f38b4621}</savedqueryid>
+  <layoutxml>
+    <grid name="resultset" object="2" jump="fullname" select="1" preview="1" icon="1">
+      <row name="result" id="contactid">
+        <cell name="fullname" width="150" />
+        <cell name="telephone1" width="100" />
+        <cell name="address1_composite" width="200" disableSorting="1" />
+        <cell name="address1_city" width="100" />
+        <cell name="address1_country" width="100" />
+        <cell name="emailaddress1" width="200" />
+      </row>
+    </grid>
+  </layoutxml>
+  <querytype>0</querytype>
+  <fetchxml>
+    <fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="true">
+      <entity name="contact">
+        <attribute name="fullname" />
+        <order attribute="fullname" descending="false" />
+        <filter type="and">
+          <condition attribute="customertypecode" operator="eq" value="749700000" />
+          <condition attribute="pdt_pertempsapprovedtrainer" operator="eq" value="749700000" />
+        </filter>
+        <link-entity name="pdt_traininghistory" from="pdt_trainer" to="contactid" alias="aa">
+          <filter type="and">
+            <condition attribute="pdt_traininghistoryid" operator="null" />
+          </filter>
+        </link-entity>
+        <attribute name="telephone1" />
+        <attribute name="emailaddress1" />
+        <attribute name="address1_country" />
+        <attribute name="address1_city" />
+        <attribute name="address1_composite" />
+        <attribute name="contactid" />
+      </entity>
+    </fetch>
+  </fetchxml>
+  <IntroducedVersion>1.2.0.0</IntroducedVersion>
+  <LocalizedNames>
+    <LocalizedName description="Trainers: Never Been Booked" languagecode="1033" />
+  </LocalizedNames>
+</savedquery>

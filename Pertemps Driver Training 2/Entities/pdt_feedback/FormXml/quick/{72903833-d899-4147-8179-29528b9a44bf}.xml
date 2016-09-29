@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<systemform>
+  <formid>{72903833-d899-4147-8179-29528b9a44bf}</formid>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <FormPresentation>1</FormPresentation>
+  <FormActivationState>1</FormActivationState>
+  <form>
+    <tabs>
+      <tab verticallayout="true" id="{c338400f-0036-439f-aa6d-57c457a4e1d1}" IsUserDefined="1">
+        <labels>
+          <label description="" languagecode="1033" />
+        </labels>
+        <columns>
+          <column width="100%">
+            <sections>
+              <section showlabel="false" showbar="false" IsUserDefined="0" id="{9eb9e05b-b3a5-486b-ac64-360ae4afc076}">
+                <labels>
+                  <label description="GENERAL" languagecode="1033" />
+                </labels>
+                <rows>
+                  <row>
+                    <cell id="{cdc53013-43ae-dd85-1c2a-2c3e0e7372bb}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Training Request" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_order" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_order" disabled="false" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{6c924afd-5d72-4f2a-9d11-8fcf1da7c64f}">
+                      <labels>
+                        <label description="Name" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_name" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="pdt_name" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{0f5f72ce-c883-459b-b04e-24185f34f493}">
+                      <labels>
+                        <label description="Owner" languagecode="1033" />
+                      </labels>
+                      <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{8b30c18c-72c3-8375-495e-61004d6c3602}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Customer" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_customerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_customerid" disabled="false" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{264298cd-7e04-d96c-5d4b-4eb11b0504bd}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Course" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_courseid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_courseid" disabled="false" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{11a9d2ad-9d50-7a9c-7e83-81b237e80d14}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Delegate" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_delegate" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_delegate" disabled="false" />
+                    </cell>
+                  </row>
+                </rows>
+              </section>
+            </sections>
+          </column>
+        </columns>
+      </tab>
+    </tabs>
+  </form>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <LocalizedNames>
+    <LocalizedName description="Information" languagecode="1033" />
+  </LocalizedNames>
+</systemform>
