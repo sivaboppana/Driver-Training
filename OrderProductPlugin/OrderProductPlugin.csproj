@@ -68,7 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DriverTrainingClassess\DriverTraining.cs" />
+    <Compile Include="DriverTrainingClassess\Entities.cs" />
     <Compile Include="OrderProductPlugin\OpderProductPlugin.cs" />
     <Compile Include="OrderProductPlugin\OrderProductPluginEntryPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

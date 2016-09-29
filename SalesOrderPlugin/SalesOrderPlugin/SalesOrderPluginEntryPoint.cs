@@ -26,7 +26,7 @@ namespace Pertemps.DriverTraining.Plugins.SalesOrderPlugin
             try
             {
                 Entity oclose = null;
-                Entity order = null;
+                //Entity order = null;
                
                     if (context.InputParameters.Contains("OrderClose") && context.InputParameters["OrderClose"] is Entity)
                     {
