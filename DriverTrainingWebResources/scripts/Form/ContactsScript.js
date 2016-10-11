@@ -52,18 +52,27 @@ function showHideDelegateBookingHistory() {
 
         if (type == "1") {// delegate
            
-            Xrm.Page.ui.controls.get("WebResource_booking_history").setVisible(true);
+            // Xrm.Page.getControl("sg_bookingHistory").setVisible(true);
+            Xrm.Page.ui.tabs.get("SUMMARY_TAB").sections.get("SUMMARY_TAB_section_15").setVisible(true);
 
         }
         else
-            Xrm.Page.ui.controls.get("WebResource_booking_history").setVisible(false);
+            // Xrm.Page.getControl("sg_bookingHistory").setVisible(false);
+            Xrm.Page.ui.tabs.get("SUMMARY_TAB").sections.get("SUMMARY_TAB_section_15").setVisible(false);
 
     }
 
 }
+
 function eligibleToWork() {
     var type = Xrm.Page.getAttribute("customertypecode").getValue();
-    if (type != "749700000") return;
+   
+    if (type != "749700000") {
+        Xrm.Page.ui.clearFormNotification("1");
+        return;
+    }
+    
+       
 
     var work = Xrm.Page.getAttribute("pdt_eligibilitytowork").getValue();
     var name = Xrm.Page.getAttribute("fullname").getValue();

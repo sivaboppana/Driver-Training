@@ -13,8 +13,10 @@ function addLookupDelegateFilter() {
         var customer = Xrm.Page.getAttribute("pdt_customerid").getValue()[0].id;
         var order = Xrm.Page.getAttribute("pdt_order").getValue()[0].id;
         if (customer != null && order!=null) {
-          var fetchXml = " <filter type='and' ><condition attribute='parentcustomerid' operator='eq' value='" + customer + "' />";
-           fetchXml = fetchXml + " <condition attribute='customertypecode' operator='eq' value='1' /></filter>";//1 is Delegate
+          //var fetchXml = " <filter type='and' ><condition attribute='parentcustomerid' operator='eq' value='" + customer + "' />";
+            // fetchXml = fetchXml + " <condition attribute='customertypecode' operator='eq' value='1' /></filter>";//1 is Delegate
+
+            var fetchXml = " <filter type='or' ><condition attribute='customertypecode' operator='eq' value='1' /><condition attribute='customertypecode' operator='eq' value='749700001' /></filter>";//1 is Delegate
               Xrm.Page.getControl("pdt_delegate").addCustomFilter(fetchXml); 
         }
     } catch (e) {

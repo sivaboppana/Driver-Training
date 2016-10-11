@@ -3,7 +3,12 @@ function onRefresh() {
     Xrm.Page.data.refresh(false);
 
 }
-
+function disableBookingHistoryAddnew() {
+    var entity = Xrm.Page.data.entity.getEntityName();
+    if (entity != "contact") return;
+    else
+        return false;
+}
 function buttonPlusHideOnMaxDelegates() {
 
     var maxNumberofDelegates = Xrm.Page.getAttribute("pdt_maxdelegatespercourse").getValue();

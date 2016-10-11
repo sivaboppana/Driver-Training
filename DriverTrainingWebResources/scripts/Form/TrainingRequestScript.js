@@ -65,9 +65,7 @@ function defaultcustomer(){
 function addFilter(){
     var functionName = "defaultcustomer";
     try {
-
-       
-      
+  
         var customerAccountFilter1 = "<filter type='and'><condition attribute='contactid' operator='null' /><condition attribute='customertypecode' operator='eq' value='3' /></filter>";
         Xrm.Page.getControl("customerid").addCustomFilter(customerAccountFilter1, "contact");
        
@@ -75,6 +73,29 @@ function addFilter(){
         //Xrm.Page.getControl("customerid").addCustomFilter(customerAccountFilter2, "account");
     }catch(e){
         Xrm.Utility.alertDialog(functionName + "Error: " + (e.message || e.description));
+    }
+}
+
+function setPriceListToDefaultPriceList() {
+    var custid = Xrm.Page.getAttribute("customerid").getValue()[0].id;
+
+    if(custid != null){
+    
+        var fetch ="<fetch><entity name='account' ><attribute name='defaultpricelevelid' /><filter>";
+        fetch= fetch + "<condition attribute='accountid' operator='eq' value='{CA1EC5BF-36D2-E511-80DB-D89D67634D48}' /></filter>";
+        fetch = fetch + "<link-entity name='pricelevel' from='pricelevelid' to='defaultpricelevelid' alias='pl' ><attribute name='name' /></link-entity></entity></fetch>";
+        var results = XrmServiceToolkit.Soap.Fetch(fetch);
+        if (results.length > 0) {
+
+            var result = results[0];
+            var pricelevelid = result.attributes["defaultpricelevelid"].id !=null ? result.attributes["defaultpricelevelid"].id : null;
+            if (pricelevelid != null) {
+                var obj = {};
+                obj.id = pricelevelid;
+                obj.name = results[0].attributes["pl.name"].value;
+                Xrm.Page.getAttribute("pricelevelid").setValue(getEntityObjectV2(obj, "pricelevel"));
+            }
+        }
     }
 }
 
@@ -95,21 +116,30 @@ function addLookupRequesterNameFilter(requester) {
     var contactid;
 
     try {
-        if (Xrm.Page.getAttribute("customerid").getValue() == null) return;
+        if (Xrm.Page.getAttribute("customerid").getValue() == null) {
+            Xrm.Utility.alertDialog("Please select Customer to Proceed");
+            return;
+        }
 
         var customerid = Xrm.Page.getAttribute("customerid").getValue()[0].id;
 
 
         if (customerid != null) {
 
-            
-            var fetchXml = " <filter type='and' ><condition attribute='parentcustomerid' operator='eq' value='" + customerid + "' />";
-            fetchXml = fetchXml + " <condition attribute='customertypecode' operator='eq' value='749700001' /></filter>";//749700001 is Manager
+
+
+            //var fetchXml = " <filter type='and' ><condition attribute='parentcustomerid' operator='eq' value='" + customerid + "' />";
+            //fetchXml = fetchXml + " <condition attribute='customertypecode' operator='eq' value='749700001' /></filter>";//749700001 is Manager
+
+            var fetchXml = " <filter type='and' ><condition attribute='customertypecode' operator='eq' value='749700001' /></filter>";//749700001 is Manager
 
 
             Xrm.Page.getControl(requester).addCustomFilter(fetchXml);//,"account");
+
+        } 
+
            
-        }
+        
     } catch (e) {
 
         Xrm.Utility.alertDialog(functionName + "Error: " + (e.message || e.description));

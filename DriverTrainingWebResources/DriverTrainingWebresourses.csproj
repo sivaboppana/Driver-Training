@@ -68,7 +68,9 @@
     <Content Include="scripts\CSS\DTStyle.css" />
     <Content Include="scripts\Form\TrainerCalenderScript.js" />
     <Content Include="scripts\Form\TrainerQualification.js" />
-    <Content Include="scripts\Form\TrainingRequestScript.js" />
+    <Content Include="scripts\Form\TrainingRequestScript.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web.config" />
     <Content Include="scripts\Toolkit\XrmServiceToolkit.js" />
     <Content Include="scripts\Toolkit\XrmServiceToolkit.min.js" />
