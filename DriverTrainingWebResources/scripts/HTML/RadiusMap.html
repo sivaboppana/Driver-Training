@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
     <meta charset="utf-8" />
@@ -80,13 +80,13 @@
         function loadAccounts() {
 
             var trainingSite = null;
-
+            var functionname = "loadAccounts";
             if (window.parent.Xrm.Page.getAttribute("pdt_trainingsite") && window.parent.Xrm.Page.getAttribute("pdt_trainingsite").getValue() != null) {
                 trainingSite = window.parent.Xrm.Page.getAttribute("pdt_trainingsite").getValue()[0].id;
             }
             else { return; }
             try {
-
+                
                 var myfetchXml = "<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>" +
                   "<entity name='account'>" +
                     "<attribute name='accountid' />" +
@@ -113,7 +113,7 @@
                 }
             }
             catch (err) {
-                window.parent.Xrm.Utility.alertDialog(err.message);
+                window.parent.Xrm.Utility.alertDialog("function :" + functionname+" "+err.message);
             }
         }
 
@@ -400,6 +400,21 @@
                              {
                                  label: "Select Trainer",
                                  eventHandler: function () {
+                                     if (userData.available) {
+
+
+                                         var exisitngTrainer = window.parent.Xrm.Page.getAttribute("pdt_trainer").getValue();
+                                         if (exisitngTrainer.length!=0) {
+                                             if (exisitngTrainer[0].id = userData.id) {
+                                                 window.Xrm.Utility.confirmDialog("Trainer is already been Selected");
+                                                 return;
+                                             }
+                                         }
+                                         var trainer = getEntityObjectV2(userData, "contact");
+                                         window.parent.Xrm.Page.getAttribute("pdt_trainer").setValue(trainer);
+                                         window.Xrm.Utility.confirmDialog("Trainer Selected");
+                                         return;                                                                                  
+                                     }
 
                                      window.parent.Xrm.Utility.confirmDialog("Adding Trainer Request to :" + userData.name, function () {
                                          var nc = new XrmServiceToolkit.Soap.BusinessEntity("pdt_trainerscalender");
@@ -408,9 +423,11 @@
                                          nc.attributes["pdt_name"] = userData.name;
                                          nc.attributes["pdt_trainercompany"] = { id: userData.company, logicalName: "contact", type: "EntityReference" };
 
-                                         nc.attributes["pdt_type"] = { value: 749700001, type: "OptionSetValue" };
-                                         nc.attributes["statuscode"] = { value: 749700004, type: "OptionSetValue" };
+                                         
 
+                                             nc.attributes["pdt_type"] = { value: 749700001, type: "OptionSetValue" };
+                                             nc.attributes["statuscode"] = { value: 749700004, type: "OptionSetValue" };
+                                         
                                          nc.attributes["pdt_orderid"] = { id: window.parent.Xrm.Page.data.entity.getId(), logicalName: "salesorder", type: "EntityReference" }
 
                                          // nc.attributes["pdt_trainercompany"] =  window.parent.Xrm.Page.getAttribute("pdt_trainingprovidercompany") ? window.parent.Xrm.Page.getAttribute("pdt_trainingprovidercompany").getValue() : null;

@@ -76,8 +76,44 @@ function RefreshForm()
 {
     Xrm.Utility.openEntityForm(Xrm.Page.data.entity.getEntityName(), Xrm.Page.data.entity.getId());
 }
-function deleteSubmittedFeedback(selectedRecord) {
 
+//Feedback Grid events on training request
+
+function feedbackEnableRule(selectedRecord) {
+    var functionName = "feedbackEnableRule";
+    try {
+        var fetch = "<fetch  >" +
+                      "<entity name='pdt_feedback' >" +
+                        "<attribute name='statuscode' />" +
+                        "<filter>" +
+                          "<condition attribute='pdt_feedbackid' operator='eq' value='" + selectedRecord[0] + "' />" +
+                        "</filter>" +
+                      "</entity>" +
+                    "</fetch>";
+
+        var results = XrmServiceToolkit.Soap.Fetch(fetch);
+        var agree = false;
+        if (results.length > 0) {
+
+            var isfeedbackSubmitted = results[0].attributes["statuscode"].value;
+            if (isfeedbackSubmitted != 749700000) {
+                var msg = results[0].attributes["statuscode"].formattedValue + " Feedback cannot be Deleted, please change status to 'Enrolled' and try again";
+                Xrm.Utility.confirmDialog(msg);
+                return false;
+            } else return true;
+        }
+    } catch (e) {
+
+        Xrm.Utility.alertDialog(functionName + "Error: " + (e.message || e.description));
+
+    }
+}
+
+
+/*
+function deleteSubmittedFeedback(selectedRecord) {
+    var functionName = "deleteSubmittedFeedback";
+    try{
     var fetch = "<fetch  >" +
                   "<entity name='pdt_feedback' >" +
                     "<attribute name='statuscode' />" +
@@ -101,12 +137,16 @@ function deleteSubmittedFeedback(selectedRecord) {
            
         } else return true;
 
-
+    
 
     }
+    } catch (e) {
 
+        Xrm.Utility.alertDialog(functionName + "Error: " + (e.message || e.description));
+
+    }
 }
-
+*/
 /*/Create Trainer Invoice button & enable rules
 function createTrainerInvoice() {
 
@@ -243,43 +283,82 @@ function getFeedbackSubmitStatus() {
 
 }
 */
-function createCourseInvoiceEnableRule() {
-    var invoiced = Xrm.Page.getAttribute("pdt_invoiced").getValue();
-   
-    if (invoiced == 1)
-        return false;
-    else
-        return true;
 
-
-}
 function trainerInvoiceEnableRule() {
     var enableRule = false;   
     var totaltrainerexpense = Xrm.Page.getAttribute("pdt_totaltrainerexpense").getValue();
     var status = Xrm.Page.getAttribute("statecode").getValue();
    // var submitStatus = Xrm.Page.getAttribute("pdt_feedbackstatus").getValue();
-    var trainingprovider = Xrm.Page.getAttribute("pdt_trainingprovider").getValue();
+   // var trainingprovider = Xrm.Page.getAttribute("pdt_trainingprovider").getValue();
     var selectedTrainer = Xrm.Page.getAttribute("pdt_trainer").getValue();
 
     var orderId = Xrm.Page.data.entity.getId();
 
-    var feedback = false;
+    //var eedback = false;
+    var invoice = getInvoices("TRAINER");
+
     
-    if (totaltrainerexpense && totaltrainerexpense > 0 && submitStatus("NOT ALL") && status != 2 && trainingprovider && selectedTrainer)
+    if (totaltrainerexpense && totaltrainerexpense > 0 && submitStatus() && status != 2 && selectedTrainer && invoice==null)
         enableRule = true;
     else
         enableRule = false;
     return enableRule;
 }
 
-function navTrainerInvoice(firstPrimaryItemId) {
 
-    alert(firstPrimaryItemId);
 
+function getInvoices(invoicetype) {
+    var functionName = "invoiceStatus";
+    try{
+        var request = Xrm.Page.data.entity.getId();
+    
+        var fetch = "<fetch><entity name='invoice' >" +
+                        "<attribute name='invoiceid' />" +
+                        "<attribute name='pdt_invoicetype' />" +
+                        "<attribute name='pdt_cancellationinvoice' />" +
+                        "<filter>" +
+                          "<condition attribute='salesorderid' operator='eq' value='" + request + "' />" +
+                        "</filter>" +
+                      "</entity>" +
+                    "</fetch>";
+        var results = XrmServiceToolkit.Soap.Fetch(fetch);
+        var invData = {};
+        var invoice = null;
+      //  userData = { name: resultName, id: resultId, address: searchString, type: entityType, parent: parent };
+
+        for (var i = 0; i < results.length; i++) {
+            var result = results[i];
+            invData = { id: result.attributes["invoiceid"].value, type: result.attributes["pdt_invoicetype"].formattedValue, cancelled: result.attributes["pdt_cancellationinvoice"].formattedValue };
+            
+            if (invoicetype == "TRAINER" && invData.type=="T") {
+
+                invoice= invData;
+            }
+            if (invoicetype == "CLIENT" && invData.type=="C") {
+
+                invoice= invData;
+            }
+              
+            if (invoicetype == "CANCEL" && invData.type=="C" && invData.cancelled=="YES") {
+
+                invoice= invData;
+            }
+        }
+
+
+        return invoice;
+    } catch (e) {
+
+        Xrm.Utility.alertDialog(functionName + "Error: " + (e.message || e.description));
+
+    }
 }
 
-function submitStatus(submitted) {
+
+
+function submitStatus() {
     var request = Xrm.Page.data.entity.getId();
+    var functionName = "submitStatus";
     try {
         var fetch = "<fetch distinct='true' >" +
           "<entity name='pdt_feedback' >" +
@@ -301,22 +380,17 @@ function submitStatus(submitted) {
             var result = results[i];
             var scode = result.attributes["submittStatus"].value;
 
-            if (submitted != "ALL" && scode == 749700000 || scode == 749700001) {
+            if ( scode == 749700000 ) {
                 status = false;
             }
-            if (submitted == "ALL" && scode != 749700004) {
-                status = false;
-            }
-
-
+            
         }
         return status;
     } catch (e) {
-        alert(e.message);
+
+        Xrm.Utility.alertDialog(functionName + "Error: " + (e.message || e.description));
+
     }
-
-
-
 }
 
 function reopenTrainingRequestEnableRule() {
@@ -336,8 +410,6 @@ function hideShowTrainingRequestProcessButtons() {
     if (totalAmount != undefined)
         if (totalAmount > 0) return true;
     return false;
-
-
 }
 
 //INVOICE
@@ -365,15 +437,26 @@ function reopenInvoiceEnableRule() {
         return false;
 }
 
-
 function createInvoiceEnableRule() {
     var noOfDelegates = Xrm.Page.getAttribute("pdt_numberofdelegates").getValue();
-    if (noOfDelegates) {
-        if (noOfDelegates > 0)
-            return true;
-        else
-            return false;
+    var totalAmount = Xrm.Page.getAttribute("totalamount").getValue();
+    var invoice = getInvoices("CLIENT");
+
+    if (invoice == null) {
+        if (noOfDelegates && totalAmount) {
+            if ((noOfDelegates > 0) && (totalAmount > 0))
+                return true;
+            else
+                return false;
+        }
     } else
         return false;
 }
+//function createCourseInvoiceEnableRule() {
+//    var invoiced = Xrm.Page.getAttribute("pdt_invoiced").getValue();
+//    if (invoiced == 1)
+//        return false;
+//    else
+//        return true;
+//}
 

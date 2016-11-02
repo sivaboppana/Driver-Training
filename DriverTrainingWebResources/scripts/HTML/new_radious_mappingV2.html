@@ -1,0 +1,547 @@
+﻿<html>
+<head>
+  
+    <meta charset="utf-8">
+</head>
+<body style="-ms-word-wrap: break-word;">
+    ?
+
+    <title>Locations on Bing MapsV2</title>
+
+    <script src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&amp;s=1" type="text/javascript"></script>
+    <script src="ClientGlobalContext.js.aspx" type="text/javascript"></script>
+    <script src="..//WebResources/new_jquery" type="text/javascript"></script>
+    <script src="..//WebResources/new_json2" type="text/javascript"></script>
+    <script src="..//WebResources/new_xrmservicetoolkit.js" type="text/javascript"></script>
+
+
+    <script type="text/javascript">
+		    var configFileName = "new_chartMapConfig";
+		    var BingMapsKey = "AsFWyS9S8xtxGNiTTfAGsaxRWZ6KmDPEwUWzOIUFJMcMzuefOxCNzR9x-QVIPy0M";// "AvA2PORWKPzgRNfnhfib3RhDj2zZ9epzcLdYVc037P8ynchZxIaEHEKXhLk9PH4T";
+		    var searchManager = null;
+		    var map = null;
+		    var locs = [];
+
+		    jQuery(document).ready(function ($) {
+		        if (window.parent.Xrm.Page.ui.getFormType() != 1 || window.parent.Xrm.Page.ui.getFormType() != 6) {
+		            loadMap();
+		            //retrieveConfigFile();
+                    //wait for searchManager to load
+		            WaitSearchManager()
+
+		        }
+		    });
+
+		    function loadMap() {
+		        Microsoft.Maps.loadModule('Microsoft.Maps.Themes.BingTheme', {
+		            callback: function () {
+		                var mapOptions =
+                        {
+                            credentials: BingMapsKey,
+                            enableClickableLogo: false,
+                            showDashboard: false,
+                            enableSearchLogo: false,
+                            theme: new Microsoft.Maps.Themes.BingTheme()
+                        }
+
+		                map = new Microsoft.Maps.Map(document.getElementById("mapDiv"), mapOptions);
+		                map.setView({ zoom: 8, center: new Microsoft.Maps.Location(51.5073, -0.127509) });
+		                Microsoft.Maps.loadModule('Microsoft.Maps.Search', { callback: createSearchManager });
+		            }
+		        });
+		    }
+
+		    function WaitSearchManager() {
+
+		        if (!searchManager) {
+		            setTimeout(WaitSearchManager, 500, null); // setTimeout(func, timeMS, params...)
+		        } else {
+		            // Set location on form here if it isn't in getLocation()
+		            loadAccounts();
+		            loadTrainers();
+		        }
+		    }
+
+		    function addPins(entityType, entities, parent, trainers) {
+		        //var i = -1;
+		        //while (i++ < entities.length - 1) {
+
+		        //var attributes = parseAttributes(entities[i]);
+		        //var searchString = attributes.line1 + "," + attributes.city + "," + attributes.province + "," + attributes.postcode;
+		        //var userData = { name: attributes.accountName, id: attributes.id, address: searchString, type: entityType, parent: parent };
+
+		        //geocodeRequest(searchString, userData);
+		        //}
+
+		        for (i = 0; i < entities.length; i++) {
+		            var result = entities[i];
+
+		            var searchString = "";
+		            var userData = {};
+
+		            var line1 = "";
+		            var city = "";
+		            var state = "";
+		            var postalcode = "";
+		            var resultName = "";
+		            var resultId = "";
+		            var tname = "";
+
+		            if (entityType == "account") {
+		                line1 = result.attributes["address1_line1"] ? result.attributes["address1_line1"].value : "-";
+		                city = result.attributes["address1_city"] ? result.attributes["address1_city"].value : "-";
+		                state = result.attributes["address1_stateorprovince"] ? result.attributes["address1_stateorprovince"].value : "-";
+		                postalcode = result.attributes["address1_postalcode"] ? result.attributes["address1_postalcode"].value : "-";
+
+
+		                resultName = result.attributes["name"] ? result.attributes["name"].value : "";
+		                resultId = result.attributes["accountid"] ? result.attributes["accountid"].value : "";
+
+		                searchString = line1 + "," + city + "," + state + "," + postalcode;
+		                userData = { name: resultName, id: resultId, address: searchString, type: entityType, parent: parent };
+		            }
+		            else if (entityType == "contact") {
+//debugger;
+		                line1 = result.attributes["contact.address1_line1"] ? result.attributes["contact.address1_line1"].value : "-";
+		                city = result.attributes["contact.address1_city"] ? result.attributes["contact.address1_city"].value : "-";
+		                state = result.attributes["contact.address1_stateorprovince"] ? result.attributes["contact.address1_stateorprovince"].value : "-";
+		                postalcode = result.attributes["contact.address1_postalcode"] ? result.attributes["contact.address1_postalcode"].value : "-";
+		                tname = result.attributes["contact.fullname"] ? result.attributes["contact.fullname"].value : "";
+
+//debugger;
+		                resultName = tname;//result.attributes["new_trainer"] ? result.attributes["new_trainer"].name : "";
+		                resultId = result.attributes["new_trainer"] ? result.attributes["new_trainer"].value : "";
+
+		                searchString = line1 + "," + city + "," + state + "," + postalcode;
+		                userData = { name: resultName, id: resultId, address: trainers[result.attributes["new_trainer"].value], type: entityType, parent: parent };
+		            }
+
+		            //var searchString = line1 + "," + city + "," + state + "," + postalcode;
+		            //var userData = { name: resultName, id: resultId, address: searchString, type: entityType, parent: parent };
+
+		            geocodeRequest(searchString, userData);
+		        }
+		    }
+
+		    function parseAttributes(entity) {
+		        var attributes = {};
+		        var attributePairs;
+
+		        if (typeof entity.getElementsByTagNameNS != "undefined") {
+		            attributePairs = entity.getElementsByTagNameNS("http://schemas.microsoft.com/xrm/2011/Contracts", "KeyValuePairOfstringanyType");
+		            attributes.id = entity.getElementsByTagNameNS("http://schemas.microsoft.com/xrm/2011/Contracts", "Id")[0].textContent;
+		        }
+		        else {
+		            attributes.id = entity.getElementsByTagName("a:Id")[0].text;
+		            attributePairs = entity.getElementsByTagName("a:KeyValuePairOfstringanyType");
+		        }
+
+		        attributes.line1 = getValue("address1_line1", attributePairs);
+		        attributes.city = getValue("address1_city", attributePairs);
+		        attributes.province = getValue("address1_stateorprovince", attributePairs);
+		        attributes.postcode = getValue("address1_postalcode", attributePairs);
+
+
+		        attributes.accountName = getValue("name", attributePairs);
+		        if (attributes.accountName == "-")
+		            attributes.accountName = getValue("fullname", attributePairs);
+
+		        return attributes;
+		    }
+
+		    function getValue(keyName, attributePairs) {
+		        for (var i = 0; i < attributePairs.length; i++) {
+		            if (attributePairs[i].childNodes[0].textContent == keyName) {
+		                return attributePairs[i].childNodes[1].textContent;
+		            }
+		            else if (attributePairs[i].childNodes[0].text == keyName) {
+		                return attributePairs[i].childNodes[1].text;
+		            }
+		        }
+		        return "-";
+		    }
+
+		    function createSearchManager() {
+		        if (!searchManager) {
+		            if (Microsoft.Maps.Search != undefined) {
+		                map.addComponent('searchManager', new Microsoft.Maps.Search.SearchManager(map));
+		                searchManager = map.getComponent('searchManager');
+		            }
+		        }
+		    }
+
+		    function geocodeRequest(where, userData) {
+		        createSearchManager();
+		        var request =
+                {
+                    where: where,
+                    count: 5,
+                    bounds: map.getBounds(),
+                    callback: onGeocodeSuccess,
+                    errorCallback: function (result, userData) { },
+                    userData: userData
+                };
+		        searchManager.geocode(request);
+		    }
+
+		    function onGeocodeSuccess(result, userData) {
+		        if (result) {
+		            var topResult = result.results && result.results[0];
+		            if (topResult) {
+		                var pushpin;
+		                if (userData.type == "contact") {
+		                    if (userData.address.indexOf("Busy") != -1) {
+		                       // pushpin = new Microsoft.Maps.Pushpin(topResult.location, { icon: "http://ecn.dev.virtualearth.net/mapcontrol/v7.0/7.0.20140904153057.64/i/BingTheme/pins/pin_userlight.png" });
+		                        //http://ecn.dev.virtualearth.net/mapcontrol/v7.0/7.0.20140904153057.64/i/BingTheme/pins/pin_userlight.png
+		                         pushpin = new Microsoft.Maps.Pushpin(topResult.location, { icon: "https://pertemps670.crm4.dynamics.com//WebResources/new_trainer_red" });
+		                    }
+		                    else {
+		                       // pushpin = new Microsoft.Maps.Pushpin(topResult.location, null);
+		                        pushpin = new Microsoft.Maps.Pushpin(topResult.location, { icon: "https://pertemps670.crm4.dynamics.com//WebResources/new_trainer_green" });
+		                    }
+
+		                    //map.setView({ bounds: Microsoft.Maps.LocationRect.fromLocations(locs) });
+		                }
+		                else if (userData.type == "account") {
+		                    pushpin = new Microsoft.Maps.Pushpin(topResult.location, { icon: "https://pertemps670.crm4.dynamics.com//WebResources/new_rmg_icon.png", width: 45, height: 33 });
+		                    map.setView({ zoom: 8, center: new Microsoft.Maps.Location(topResult.location.latitude, topResult.location.longitude) });
+		                }
+		                else { return; }
+
+		                locs.push(topResult.location);
+		                map.entities.push(pushpin);
+		                map.entities.push(new Microsoft.Maps.Infobox(topResult.location,
+                        {
+                            title: userData.name,
+                            pushpin: pushpin,
+                            description: userData.address,
+                            actions: [
+                              {
+                                  label: "Select Trainer",
+                                  eventHandler: function () {
+                                      alert("Adding Trainer Request");
+
+                                      var nc = new BusinessEntity("new_trainerrequest");
+                                      nc.attributes["new_course"] = { id: window.parent.Xrm.Page.data.entity.getId(), logicalName: "new_course", type: "EntityReference" };
+                                      nc.attributes["new_trainer"] = { id: userData.id, logicalName: "contact", type: "EntityReference" };
+                                      nc.attributes["new_type"] = { value: 100000001, type: "OptionSetValue" };
+                                      nc.attributes["new_starttime"] = window.parent.Xrm.Page.getAttribute("new_coursestartdate") ? window.parent.Xrm.Page.getAttribute("new_coursestartdate").getValue() : null;
+                                      nc.attributes["new_endtime"] = window.parent.Xrm.Page.getAttribute("new_courseenddate") ? window.parent.Xrm.Page.getAttribute("new_courseenddate").getValue() : null;
+                                      nc.attributes["new_trainingsite"] = { id: window.parent.Xrm.Page.getAttribute("new_trainingsiterequested").getValue()[0].id, logicalName: "account", type: "EntityReference" };
+                                      var ncId = oService.Create(nc);
+
+                                      alert("Trainer Request Added!");
+                                  }
+                              }
+                            ],
+
+                            titleClickHandler: function () {
+                                window.Xrm.Utility.openEntityForm(userData.type, userData.id, null);
+                            }
+                        }));
+		            }
+
+		        }
+		        //if (userData.parent) { map.setView({ zoom: 10, center: new Microsoft.Maps.Location(topResult.location.latitude, topResult.location.longitude), bounds: Microsoft.Maps.LocationRect.fromLocations(locs) }); }
+
+
+		    }
+
+		    function handlerEvent() {
+		        alert("Adding Trainer Request");
+
+		        var nc = new BusinessEntity("new_trainerrequest");
+		        nc.attributes["new_Course"] = { id: window.parent.Xrm.Page.data.entity.getId(), logicalName: "new_course", type: "EntityReference" };
+		        nc.attributes["new_Trainer"] = { id: userData.Id, logicalName: "contact", type: "EntityReference" };
+
+		        var ncId = oService.Create(nc);
+
+		        alert("Trainer Request Added!");
+		    }
+
+		    function loadAccounts() {
+		        //var billingSite = null;
+		        var trainingSite = null;
+
+		        //if (window.parent.Xrm.Page.getAttribute("new_billingsiterequested") && window.parent.Xrm.Page.getAttribute("new_billingsiterequested").getValue() != null)
+		        //{
+		        //billingSite = window.parent.Xrm.Page.getAttribute("new_billingsiterequested").getValue()[0].id;
+		        //}
+		        if (window.parent.Xrm.Page.getAttribute("new_trainingsiterequested") && window.parent.Xrm.Page.getAttribute("new_trainingsiterequested").getValue() != null) {
+		            trainingSite = window.parent.Xrm.Page.getAttribute("new_trainingsiterequested").getValue()[0].id;
+		        }
+		        else { return; }
+		        try {
+
+		            var myfetchXml = "<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>" +
+					  "<entity name='account'>" +
+						"<attribute name='accountid' />" +
+						"<attribute name='name' />" +
+							 "<attribute name='address1_postalcode' />" +
+							 "<attribute name='address1_line1' />" +
+							 "<attribute name='address1_stateorprovince' />" +
+							 "<attribute name='address1_country' />" +
+							 "<attribute name='address1_city' />" +
+						"<attribute name='address1_longitude' />" +
+						"<attribute name='address1_latitude' />" +
+						"<order attribute='address1_longitude' descending='false' />" +
+						"<filter type='or'>" +
+						 //"<condition attribute='accountid' operator='eq' uitype='opportunity' value='" + billingSite + "' />" +
+						 "<condition attribute='accountid' operator='eq' uitype='opportunity' value='" + trainingSite + "' />" +
+						"</filter>" +
+					  "</entity>" +
+					"</fetch>";
+
+		            var results = oService.ExecuteFetchXml(myfetchXml);
+
+		            if (results != null && results.length > 0) {
+		                //var result = results[0];
+		                addPins("account", results, true);
+		            }
+		        }
+		        catch (err) {
+		            alert("error: " + err);
+		        }
+		    }
+
+		    function getTrainerDateFetchString() {
+		        var fields = ["new_clientsdateoption1", "new_clientsdateoption2", "new_clientsdateoption3", "new_coursestartdate"];
+		        var fetchOutput = "";
+
+		        for (i = 0; i < fields.length; i++) {
+		            if (window.parent.Xrm.Page.getAttribute(fields[i])) {
+		                var myDate = new Date(window.parent.Xrm.Page.getAttribute(fields[i]).getValue());
+		                var output = (myDate.getFullYear() + "-" + (myDate.getMonth() + 1) + "-" + myDate.getDate());
+
+		                fetchOutput += "<condition attribute='new_starttime' operator='on' value='" + output + "' />";
+		            }
+		        }
+
+		        return fetchOutput;
+		    }
+
+		    function loadTrainers() {
+		        try {
+		            var myfetchXml = "<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>" +
+                         "<entity name='new_trainerrequest'>" +
+                           "<attribute name='new_trainerrequestid' />" +
+                           "<attribute name='new_type' />" +
+                           "<attribute name='new_trainer' />" +
+                           "<attribute name='statuscode' />" +
+                           "<attribute name='new_starttime' />" +
+                           "<attribute name='new_endtime' />" +
+                           //"<order attribute='new_type' descending='false' />" +
+                           "<order attribute='new_trainer' descending='false' />" +
+                           "<order attribute='new_starttime' descending='false' />" +
+                           "<filter type='and'>" +
+                               //"<condition attribute='new_type' operator='eq' value='100000000' />" +
+                               "<condition attribute='statuscode' operator='not-in'>" +
+                                   "<value>100000001</value>" + "<value>100000004</value>" + "<value>2</value>" + "<value>1</value>" + "<value>100000003</value>" +
+                               "</condition>" +
+                                 "<condition attribute='new_trainer' operator='not-null' />"+
+                               "<filter type='or'>" +
+                                   getTrainerDateFetchString() +
+                                   //"<condition attribute='new_starttime' operator='on' value='2014-09-26' />" +
+                                   //"<condition attribute='new_starttime' operator='on' value='2014-09-26' />" +
+                                   //"<condition attribute='new_starttime' operator='on' value='2014-09-26' />" +
+                                   //"<condition attribute='new_starttime' operator='on' value='2014-09-26' />" +
+                               "</filter>" +
+                           "</filter>" +
+                           "<link-entity name='contact' from='contactid' to='new_trainer' alias='contact'>" +
+                              "<attribute name='fullname' />" +
+                             "<attribute name='address1_postalcode' />" +
+                             "<attribute name='address1_line1' />" +
+                             "<attribute name='address1_stateorprovince' />" +
+                             "<attribute name='address1_city' />" +
+                             "<filter type='and'>" +
+                               "<condition attribute='new_pertempsapprovedtrainer' operator='eq' value='100000000' />" +
+                                "<condition attribute='address1_postalcode' operator='not-null' />"+
+                                "<condition attribute='customertypecode' operator='eq' value='100000000' />"+
+                                "<condition attribute='statuscode' operator='eq' value='1' />"+
+                             "</filter>" +
+                           "</link-entity>" +
+                         "</entity>" +
+                       "</fetch>";
+
+		            var results = oService.ExecuteFetchXml(myfetchXml);
+
+		            if (results != null && results.length > 0) {
+		                var trainers = {};
+		                //myobj["test"] = "foooo yooooo";
+		                for (i = 0; i < results.length; i++) {
+		                    var result = results[i];
+
+		                    var startTime = result.attributes["new_starttime"] ? result.attributes["new_starttime"].formattedValue : "";
+		                    var endTime = result.attributes["new_endtime"] ? result.attributes["new_endtime"].formattedValue : "";
+		                    //startTime = startTime.substring(startTime.length) - 5);
+		                    endTime = endTime.substring(endTime.length - 5);
+
+		                    var recType = result.attributes["new_type"] ? result.attributes["new_type"].formattedValue : "";
+		                    switch (recType) {
+		                        case "Availability":
+		                            recType = "Available";
+		                            break;
+		                        case "Request":
+		                            var sCode = result.attributes["statuscode"] ? result.attributes["statuscode"].formattedValue : "";
+		                            if (sCode == "Accepted") {
+		                                recType = "Busy";
+		                                break;
+		                            }
+		                            if (sCode == "Awaiting Response") {
+		                                recType = "Awaiting";
+		                                break;
+		                            }
+		                            break;
+		                        default:
+		                            recType = "";
+		                    }
+
+		                    if (trainers[result.attributes["new_trainer"].value] == undefined) {
+		                        trainers[result.attributes["new_trainer"].value] = recType + ": " + startTime + " - " + endTime; //.toLocaleTimeString()
+		                    }
+		                    else if (trainers[result.attributes["new_trainer"].value] != undefined) {
+		                        trainers[result.attributes["new_trainer"].value] = trainers[result.attributes["new_trainer"].value] + "<br />" + recType + ": " + startTime + " - " + endTime; //.toLocaleTimeString()
+		                    }
+		                }
+
+		                //
+		                addPins("contact", results, false, trainers);
+		            }
+
+
+		        }
+		        catch (err) {
+		            alert("error: " + err);
+		        }
+		    }
+
+		    function retrieveConfigFile() {
+		        var requestQuery = Xrm.Page.context.getClientUrl() + "/XRMServices/2011/OrganizationData.svc/"
+                    + "WebResourceSet?$select=Name,Content,WebResourceId&$filter=Name eq '" + configFileName + "'&$top=1";
+		        var req = new XMLHttpRequest();
+		        req.open("GET", requestQuery, true);
+		        req.setRequestHeader("Accept", "application/xml, text/xml, */*");
+		        req.setRequestHeader("Content-Type", "text/xml; charset=utf-8");
+		        req.onreadystatechange = function () {
+		            if (this.readyState == 4 /* complete */) {
+		                req.onreadystatechange = null;
+		                if (this.status == 200) {
+		                    var returned;
+		                    if (typeof req.responseXML.getElementsByTagNameNS !== "undefined") {
+		                        returned = req.responseXML.getElementsByTagNameNS("http://schemas.microsoft.com/ado/2007/08/dataservices/metadata", "properties")[0];
+		                    }
+		                    else {
+		                        returned = req.responseXML.getElementsByTagName("m:properties")[0];
+		                    }
+		                    parseConfigFile(returned);
+		                }
+		                else {
+		                    //error
+		                }
+		            }
+		        };
+		        req.send();
+		    }
+
+		    function decode64(input) {
+		        var keyStr = "ABCDEFGHIJKLMNOP" +
+                           "QRSTUVWXYZabcdef" +
+                           "ghijklmnopqrstuv" +
+                           "wxyz0123456789+/" +
+                           "=";
+
+		        var output = "";
+		        var chr1, chr2, chr3 = "";
+		        var enc1, enc2, enc3, enc4 = "";
+		        var i = 0;
+
+		        // remove all characters that are not A-Z, a-z, 0-9, +, /, or =
+		        var base64test = /[^A-Za-z0-9\+\/\=]/g;
+		        if (base64test.exec(input)) {
+		            alert("There were invalid base64 characters in the input text.\n" +
+                          "Valid base64 characters are A-Z, a-z, 0-9, '+', '/',and '='\n" +
+                          "Expect errors in decoding.");
+		        }
+		        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+		        do {
+		            enc1 = keyStr.indexOf(input.charAt(i++));
+		            enc2 = keyStr.indexOf(input.charAt(i++));
+		            enc3 = keyStr.indexOf(input.charAt(i++));
+		            enc4 = keyStr.indexOf(input.charAt(i++));
+
+		            chr1 = (enc1 << 2) | (enc2 >> 4);
+		            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+		            chr3 = ((enc3 & 3) << 6) | enc4;
+
+		            output = output + String.fromCharCode(chr1);
+
+		            if (enc3 != 64) {
+		                output = output + String.fromCharCode(chr2);
+		            }
+		            if (enc4 != 64) {
+		                output = output + String.fromCharCode(chr3);
+		            }
+
+		            chr1 = chr2 = chr3 = "";
+		            enc1 = enc2 = enc3 = enc4 = "";
+
+		        } while (i < input.length);
+
+		        var doc;
+		        if (window.ActiveXObject) {
+		            doc = new ActiveXObject('Microsoft.XMLDOM');
+		            doc.async = 'false';
+		            doc.loadXML(unescape(output));
+		        } else {
+		            var parser = new DOMParser();
+		            doc = parser.parseFromString(unescape(output), 'text/xml');
+		        }
+
+		        return doc;
+		    }
+
+		    function parseConfigFile(responseXML) {
+		        if (typeof responseXML.getElementsByTagNameNS !== "undefined") {  // IE8 breaks at this line - known issue
+		            var configXMLContent = decode64(responseXML.getElementsByTagNameNS("http://schemas.microsoft.com/ado/2007/08/dataservices", "Content")[0].textContent);
+		            if (typeof configXMLContent.getElementsByTagName("bingkey")[0].textContent != "undefined")
+		                BingMapsKey = configXMLContent.getElementsByTagName("bingkey")[0].textContent;
+		            else
+		                BingMapsKey = configXMLContent.getElementsByTagName("bingkey")[0].text;
+		        }
+		        else {
+		            var configXMLContent = decode64(responseXML.getElementsByTagName("d:Content")[0].text);
+		            BingMapsKey = configXMLContent.getElementsByTagName("bingkey")[0].text;
+		        }
+
+		        Microsoft.Maps.loadModule('Microsoft.Maps.Themes.BingTheme', {
+		            callback: function () {
+		                var mapOptions =
+                        {
+                            credentials: BingMapsKey,
+                            enableClickableLogo: false,
+                            showDashboard: false,
+                            enableSearchLogo: false,
+                            theme: new Microsoft.Maps.Themes.BingTheme()
+                        }
+
+		                map = new Microsoft.Maps.Map(document.getElementById("mapDiv"), mapOptions);
+		                map.setView({ zoom: 8, center: new Microsoft.Maps.Location(51.5073, -0.127509) });
+		                Microsoft.Maps.loadModule('Microsoft.Maps.Search', { callback: createSearchManager });
+
+		                //var parameters = getParametersFromQuery(window.location.search);
+
+
+		            }
+		        });
+		    }
+
+    </script>
+
+
+    <div class="MicrosoftMap BingTheme MapTypeId_m medium" id="mapDiv"></div>
+
+
+
+</body>
+</html>

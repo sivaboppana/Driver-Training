@@ -86,6 +86,10 @@ function isEmailUnique() {
 
     var email = Xrm.Page.getAttribute("emailaddress1").getValue();
     if (email == null || email == undefined) return;
+
+    var functionName = "isEmailUnique";
+    try{
+
     var myfetchXml = "<fetch><entity name='contact' ><attribute name='contactid' />" +
     "<filter type='and' ><condition attribute='emailaddress1' operator='eq' value='"+email+"' /></filter></entity></fetch>";
 
@@ -94,6 +98,11 @@ function isEmailUnique() {
 
         Xrm.Utility.alertDialog(email + " : is alredy assigned to another contact");
         Xrm.Page.getAttribute("emailaddress1").setValue(null);
+    }
+    } catch (e) {
+
+        Xrm.Utility.alertDialog(functionName + "Error: " + (e.message || e.description));
+
     }
 }
 function changeAddressPopupFieldLabels() {

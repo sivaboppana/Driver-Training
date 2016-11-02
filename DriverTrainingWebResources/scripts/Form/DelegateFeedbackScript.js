@@ -93,6 +93,9 @@ function onOrderChange() {
     if (orderid == null) return;
     var feedbackid = Xrm.Page.data.entity.getId();
 
+    var functionName = "onOrderChange";
+    try{
+
     var myfetchXml = "<fetch  >" +
                       "<entity name='salesorder' >" +
                         "<attribute name='customerid' />" +
@@ -126,6 +129,11 @@ function onOrderChange() {
             return;
         }
     } 
+    } catch (e) {
+
+        Xrm.Utility.alertDialog(functionName + "Error: " + (e.message || e.description));
+
+    }
 }
 
 function setName() {
@@ -145,49 +153,55 @@ function onSubmitStatusChange() {
     else
         Xrm.Page.getAttribute("pdt_feedbacksubmittedon").setValue(null);
 }
-
-function onFeedbackSave() {
+/*
+function onStatusChange() {
+    var functionName = "onFeedbackSave";
     var submitted = 749700004;
     var enrolled = 749700000;
     var attended = 749700001;
 
     var submitStatus = Xrm.Page.getAttribute("statuscode").getValue();
-
-    //if (submitStatus != 749700004) return;
-    var feedbackid = Xrm.Page.data.entity.getId();
-    var orderid = Xrm.Page.getAttribute("pdt_order").getValue()[0].id;
    
-    var fetch = " <fetch><entity name='pdt_feedback' ><attribute name='statuscode' /><attribute name='pdt_feedbackid' />" +
-                    "<filter><condition attribute='pdt_order' operator='eq' value='"+orderid+"' /></filter>" +
-                  "</entity></fetch>";
+    try{
+        //if (submitStatus != 749700004) return;
+        var feedbackid = Xrm.Page.data.entity.getId();
+        var orderid = Xrm.Page.getAttribute("pdt_order").getValue()[0].id;
+        var order = {};
+        var fetch = " <fetch><entity name='pdt_feedback' ><attribute name='statuscode' /><attribute name='pdt_feedbackid' />" +
+                        "<filter><condition attribute='pdt_order' operator='eq' value='"+orderid+"' /></filter>" +
+                      "</entity></fetch>";
 
-    var results = XrmServiceToolkit.Soap.Fetch(fetch);
-    var status = true;
-    var order = {};
-    var orderStausCode=1;
-    if (results == null || results.length == 0) return;
+        var results = XrmServiceToolkit.Soap.Fetch(fetch);
+        var status = null;
+      
+    
+        if (results == null || results.length == 0) return;
    
-    for (var i = 0 ; i < results.length; i++) {
-        var result = results[i];
+        for (var i = 0 ; i < results.length; i++) {
+            var result = results[i];
 
-        var statuscode = result.attributes["statuscode"].value;
-        var fid = result.attributes["pdt_feedbackid"].value;
-        if (feedbackid.search(fid.toUpperCase()) != 1)
-        {
-            if (statuscode == enrolled || statuscode == attended) status = false;
-        }
+            var statuscode = result.attributes["statuscode"].value;
+            var fid = result.attributes["pdt_feedbackid"].value;
+            if (feedbackid.search(fid.toUpperCase()) != 1)
+            {
+                switch (statuscode) {
+                    case enrolled:
+                        status = enrolled;
+                        break;
+                    case attended, submitted:
+                        status = attended;
+                }
+            }
        
-        /*
-        if (feedbackid.search(fid.toUpperCase()) != 1) {
-            if (statuscode != submitted) status = false;
-        } else {
-
-            if (submitStatus != submitted) status = false;           
-        }*/
-    }
+        }
    
-    order.pdt_FeedbackStatus = status;
-  
+        if (status == null)
+            return;
+        else if (status == enrolled)
+            order.statuscode = 1; // New Request
+        else if (status == attended)
+            order.statuscode = new OptionSetValue(749700018);//{Value:"749700018"};
+
         XrmServiceToolkit.Rest.Update(
                 orderid,
                 order,
@@ -200,6 +214,11 @@ function onFeedbackSave() {
                 },
                 false
             );
-}
+    } catch (e) {
 
+        Xrm.Utility.alertDialog(functionName + "Error: " + (e.message || e.description));
+
+    }
+}
+*/
 

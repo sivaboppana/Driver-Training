@@ -19,7 +19,9 @@ function isQualificationExists() {
     var currentDate = new Date().format("yyyy-MM-dd");
 
     if (trainer == null || qualification == null) return;
-       
+    var functionName = "isQualificationExists";
+    try{
+   
 
     var myfetchXml = "<fetch returntotalrecordcount='true' >" +
                       "<entity name='pdt_trainerqualification' >" + 
@@ -43,6 +45,11 @@ function isQualificationExists() {
         }
         
         );
+    } catch (e) {
+
+        Xrm.Utility.alertDialog(functionName + "Error: " + (e.message || e.description));
+
+    }
 
 }
 function setName() {

@@ -54,6 +54,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="scripts\ChartMap\pdt_chartMapConfig.xml" />
+    <Content Include="scripts\HTML\Google_Radiousmap.html" />
+    <Content Include="scripts\HTML\new_radious_mappingV2.html" />
+    <Content Include="scripts\HTML\RadiusMapV8.3.html" />
     <Content Include="scripts\Toolkit\jquery.js" />
     <Content Include="scripts\Toolkit\json2.js" />
     <Content Include="scripts\Ribbon\RibbonScript.js" />

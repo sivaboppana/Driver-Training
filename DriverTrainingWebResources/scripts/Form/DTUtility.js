@@ -38,6 +38,20 @@ function formattedDate(dateString) {
     }
     return  currentDate ;
 }
+function formattedDateNoTime(dateString) {
+    var currentDate = null;
+    if (dateString != null) {
+        var dd = dateString.getDate();
+        var mm = dateString.getMonth() + 1; //January is 0!
+        var yyyy = dateString.getFullYear();
+        var hh = dateString.getHours();
+        var mi = dateString.getMinutes();
+
+        currentDate = yyyy + "-" + mm + "-" + dd ;
+
+    }
+    return currentDate;
+}
 
 function MakeAnId(prefix) {
     var text = "";
@@ -74,6 +88,17 @@ function getEntityObjectV2(obj, type) {
     } else {
         return null;
     }
+}
+
+function getEntityObjectV3(id,name, type) {
+    
+        var entity = new Array();
+        entity[0] = new Object();
+        entity[0].id = id;
+        entity[0].name = name;
+        entity[0].entityType = type;
+        return entity;
+    
 }
 
 function compositeAddress(fieldName, line1, line2, line3, city, state, postcode, country, phone, fax) {

@@ -78,24 +78,30 @@ function addFilter(){
 
 function setPriceListToDefaultPriceList() {
     var custid = Xrm.Page.getAttribute("customerid").getValue()[0].id;
-
-    if(custid != null){
+    var functionName = "setPriceListToDefaultPriceList";
+    try{
+        if(custid != null){
     
-        var fetch ="<fetch><entity name='account' ><attribute name='defaultpricelevelid' /><filter>";
-        fetch= fetch + "<condition attribute='accountid' operator='eq' value='{CA1EC5BF-36D2-E511-80DB-D89D67634D48}' /></filter>";
-        fetch = fetch + "<link-entity name='pricelevel' from='pricelevelid' to='defaultpricelevelid' alias='pl' ><attribute name='name' /></link-entity></entity></fetch>";
-        var results = XrmServiceToolkit.Soap.Fetch(fetch);
-        if (results.length > 0) {
+            var fetch ="<fetch><entity name='account' ><attribute name='defaultpricelevelid' /><filter>";
+            fetch = fetch + "<condition attribute='accountid' operator='eq' value='" + custid + "' /></filter>";
+            fetch = fetch + "<link-entity name='pricelevel' from='pricelevelid' to='defaultpricelevelid' alias='pl' ><attribute name='name' /></link-entity></entity></fetch>";
+            var results = XrmServiceToolkit.Soap.Fetch(fetch);
+            if (results.length > 0) {
 
-            var result = results[0];
-            var pricelevelid = result.attributes["defaultpricelevelid"].id !=null ? result.attributes["defaultpricelevelid"].id : null;
-            if (pricelevelid != null) {
-                var obj = {};
-                obj.id = pricelevelid;
-                obj.name = results[0].attributes["pl.name"].value;
-                Xrm.Page.getAttribute("pricelevelid").setValue(getEntityObjectV2(obj, "pricelevel"));
+                var result = results[0];
+                var pricelevelid = result.attributes["defaultpricelevelid"].id !=null ? result.attributes["defaultpricelevelid"].id : null;
+                if (pricelevelid != null) {
+                    var obj = {};
+                    obj.id = pricelevelid;
+                    obj.name = results[0].attributes["pl.name"].value;
+                    Xrm.Page.getAttribute("pricelevelid").setValue(getEntityObjectV2(obj, "pricelevel"));
+                }
             }
         }
+    } catch (e) {
+
+        Xrm.Utility.alertDialog(functionName + "Error: " + (e.message || e.description));
+
     }
 }
 
@@ -189,7 +195,10 @@ function addLookupTrainerFilter() {
         var viewDisplayName = "Contacts lookup view";
         var courseid = Xrm.Page.getAttribute("pdt_course").getValue()[0].id;
         var orderid = Xrm.Page.data.entity.getId();
-        if (Xrm.Page.getAttribute("pdt_trainingprovider").getValue() != null) 
+        var startDate = Xrm.Page.getAttribute("pdt_coursestartdate").getValue() != null ? new Date(Xrm.Page.getAttribute("pdt_coursestartdate").getValue()) : null;
+
+
+       if (Xrm.Page.getAttribute("pdt_trainingprovider").getValue() != null)
             provider = Xrm.Page.getAttribute("pdt_trainingprovider").getValue().length != 0 ? Xrm.Page.getAttribute("pdt_trainingprovider").getValue()[0].id : null;
         
         fetchXml = "<fetch distinct='true' >" +
@@ -200,8 +209,17 @@ function addLookupTrainerFilter() {
                "<attribute name='parentcustomerid' />";
         if (provider != null)
             fetchXml = fetchXml + "<filter><condition attribute='parentcustomerid' operator='eq' value='" + provider + "' /></filter>";
-        fetchXml = fetchXml + "<link-entity name='pdt_trainerqualification' from='pdt_trainer' to='contactid' >" +
-                     "<link-entity name='pdt_qualification' from='pdt_qualificationid' to='pdt_qualification' >" +
+
+            fetchXml = fetchXml + "<link-entity name='pdt_trainerqualification' from='pdt_trainer' to='contactid' >" +
+              "<attribute name='pdt_expirydate' />" ;
+            if (startDate != null) {
+               
+                  fetchXml = fetchXml + "<filter>" +
+                    "<condition attribute='pdt_expirydate' operator='ge' value='" + formattedDateNoTime(startDate) + "' />" +
+                  "</filter>";
+              }
+
+              fetchXml = fetchXml + "<link-entity name='pdt_qualification' from='pdt_qualificationid' to='pdt_qualification' >" +
                        "<link-entity name='pdt_product_pdt_qualification' from='pdt_qualificationid' to='pdt_qualificationid' intersect='true' >" +
                            "<filter type='and' >" +
                                 "<condition attribute='productid' operator='eq' value='" + courseid + "' />" +
@@ -223,6 +241,7 @@ function addLookupTrainerFilter() {
         Xrm.Utility.alertDialog(functionName + "Error: " + (e.message || e.description));
     }
 }
+
 function onSelectedTrainerChange() {
     var functionName = "onSelectedTrainerChange";
     try{
@@ -254,6 +273,9 @@ function onSelectedTrainerChange() {
         Xrm.Utility.alertDialog(functionName + "Error: " + (e.message || e.description));
     }
 }
+
+
+
 // Training Site & Billing Site Filters
 function addSiteFilters() {
 
@@ -265,7 +287,7 @@ function addSiteFilters() {
 
 function addLookupBillingSiteFilter() {
 
-    var functionName = "addLookupTrainerFilter";
+    var functionName = "addLookupBillingSiteFilter";
   
     try {
 
@@ -415,7 +437,7 @@ function addDelegateGridEvents() {
     }, 2000);
 }
 function onDelegateGridLoad() {
-    var functionName = " addDelegateGridEvents ";
+    var functionName = " onDelegateGridLoad ";
     var currentRowCount = -1;
     var delegates = "";
     try {       //setting timeout beacuse subgrid take some time to load after the form is loaded
@@ -475,6 +497,38 @@ function courseEndDateSelection() {
 
     if (endDate!=null) Xrm.Page.getAttribute("pdt_courseenddate").setValue(endDate);
     
+}
+function validateReminderDate() {
+
+    var startDate = Xrm.Page.getAttribute("pdt_coursestartdate").getValue() != null ? new Date(Xrm.Page.getAttribute("pdt_coursestartdate").getValue()) : null;
+    var endDate = Xrm.Page.getAttribute("pdt_courseenddate").getValue() != null ? new Date(Xrm.Page.getAttribute("pdt_courseenddate").getValue()) : null;
+    var reminderdate = Xrm.Page.getAttribute("pdt_reminderdate").getValue() != null ? new Date(Xrm.Page.getAttribute("pdt_reminderdate").getValue()) : null;
+
+    if (startDate == null) {
+
+        Xrm.Utility.alertDialog("Course Start Date Can Not Be Null");
+        Xrm.Page.getAttribute("pdt_reminderdate").setValue(null);
+        return;
+    }
+    if (endDate == null) {
+
+        Xrm.Utility.alertDialog("Course End Date Can Not Be Null");
+        Xrm.Page.getAttribute("pdt_reminderdate").setValue(null);
+        return;
+    }
+    if (reminderdate != null) {
+       
+        if (reminderdate.valueOf() > startDate.valueOf()) {
+            Xrm.Utility.alertDialog("Reminder Date Can Not Be After Start Date ");
+            Xrm.Page.getAttribute("pdt_reminderdate").setValue(null);
+            return;
+        }else if(reminderdate.valueOf() >endDate.valueOf()){
+            Xrm.Utility.alertDialog("Reminder Date Can Not Be After End Date ");
+            Xrm.Page.getAttribute("pdt_reminderdate").setValue(null);
+            return;
+        
+        }
+    }
 }
 
 function saveOnRequiredFields() {
