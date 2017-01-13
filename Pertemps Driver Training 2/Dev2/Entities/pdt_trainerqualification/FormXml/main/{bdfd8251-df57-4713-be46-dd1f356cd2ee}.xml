@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<systemform>
+  <formid>{bdfd8251-df57-4713-be46-dd1f356cd2ee}</formid>
+  <IntroducedVersion>1.1.0.1</IntroducedVersion>
+  <FormPresentation>1</FormPresentation>
+  <FormActivationState>1</FormActivationState>
+  <form shownavigationbar="true" showImage="false" maxWidth="1900">
+    <tabs>
+      <tab verticallayout="true" id="{45814186-814d-4257-96ed-a04356165a8a}" IsUserDefined="1">
+        <labels>
+          <label description="General" languagecode="1033" />
+        </labels>
+        <columns>
+          <column width="33%">
+            <sections>
+              <section showlabel="false" showbar="false" IsUserDefined="0" id="{0590ac89-33c7-45e8-96e3-0f2c8f34c6ff}">
+                <labels>
+                  <label description="General" languagecode="1033" />
+                </labels>
+                <rows>
+                  <row>
+                    <cell id="{84fc3cf1-b19b-4033-b58e-673e2bbe9a48}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Name" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_name" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="pdt_name" uniqueid="{4c868183-97be-31d0-d1e3-818756788158}" disabled="true" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{9c15439e-c9a2-5720-4437-e400e81e3b5b}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Trainer" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_trainer" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_trainer" disabled="false" uniqueid="{843523d7-7c81-4363-058a-2ecb7954d03d}">
+                        <parameters>
+                          <AutoResolve>true</AutoResolve>
+                          <DisableMru>false</DisableMru>
+                          <DisableQuickFind>false</DisableQuickFind>
+                          <DisableViewPicker>false</DisableViewPicker>
+                          <DefaultViewId>{A2D479C5-53E3-4C69-ADDD-802327E67A0D}</DefaultViewId>
+                          <AllowFilterOff>false</AllowFilterOff>
+                        </parameters>
+                      </control>
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{c3e56334-489a-6ea8-070e-55828a89b8c0}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Qualification" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_qualification" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_qualification" disabled="false" uniqueid="{44415a00-6b1e-b158-5604-300baa4cdce4}">
+                        <parameters>
+                          <AutoResolve>true</AutoResolve>
+                          <DisableMru>false</DisableMru>
+                          <DisableQuickFind>false</DisableQuickFind>
+                          <DisableViewPicker>false</DisableViewPicker>
+                          <DefaultViewId>{77B4F65D-CF66-40E1-AA41-371B5717D01E}</DefaultViewId>
+                          <AllowFilterOff>false</AllowFilterOff>
+                        </parameters>
+                      </control>
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{d3696a98-6eac-1477-7eb6-41e2e8ca25dd}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Expiry Date" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_expirydate" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="pdt_expirydate" disabled="false" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{426469d9-c4e0-2062-09c3-9d3859c02ea7}" showlabel="true" locklevel="0" rowspan="2">
+                      <labels>
+                        <label description="Description" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_description" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="pdt_description" disabled="false" uniqueid="{52649b26-893a-a440-b7b2-5d4c2d5ba022}" />
+                    </cell>
+                  </row>
+                  <row></row>
+                </rows>
+              </section>
+            </sections>
+          </column>
+          <column width="66%">
+            <sections>
+              <section name="{45814186-814d-4257-96ed-a04356165a8a}_section_3" showlabel="false" showbar="false" locklevel="0" id="{2b064309-849e-0d3b-0d7d-04e923ed3c50}" IsUserDefined="0" layout="varwidth" columns="1" labelwidth="115">
+                <labels>
+                  <label description="Section" languagecode="1033" />
+                </labels>
+                <rows>
+                  <row>
+                    <cell id="{b882a877-8490-5225-cce0-72e7bd395c99}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Status" languagecode="1033" />
+                      </labels>
+                      <control id="statecode" classid="{3EF39988-22BB-4f0b-BBBE-64B5A3748AEE}" datafieldname="statecode" disabled="false" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{b3978380-8375-0bd0-e194-27111e210de3}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Created On" languagecode="1033" />
+                      </labels>
+                      <control id="createdon" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="createdon" disabled="true" uniqueid="{bd1020ac-5468-920e-ec75-7a67ba7771b9}" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{a550e5d9-6042-8a85-4b68-713a5282d61c}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Created By" languagecode="1033" />
+                      </labels>
+                      <control id="createdby" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="createdby" disabled="true" uniqueid="{306a0aee-e9b6-3c5a-c660-73eb003a896e}">
+                        <parameters>
+                          <AutoResolve>true</AutoResolve>
+                          <DisableMru>false</DisableMru>
+                          <DisableQuickFind>false</DisableQuickFind>
+                          <DisableViewPicker>false</DisableViewPicker>
+                          <DefaultViewId>{E88CA999-0B16-4AE9-B6A9-9EDC840D42D8}</DefaultViewId>
+                          <AllowFilterOff>false</AllowFilterOff>
+                        </parameters>
+                      </control>
+                    </cell>
+                  </row>
+                </rows>
+              </section>
+              <section showlabel="false" showbar="false" id="{a3c1cbf4-e5ac-40c4-a1d3-96206f354631}" IsUserDefined="0" height="auto">
+                <labels>
+                  <label description="Notes" languagecode="1033" />
+                </labels>
+                <rows>
+                  <row>
+                    <cell showlabel="false" rowspan="15" auto="false" id="{1d409786-f4c5-41e1-8cab-a7de2125f098}">
+                      <labels>
+                        <label description="Note Text" languagecode="1033" />
+                      </labels>
+                      <control id="notescontrol" classid="{06375649-c143-495e-a496-c962e5b4488e}">
+                        <parameters>
+                          <DefaultTabId>NotesTab</DefaultTabId>
+                        </parameters>
+                      </control>
+                    </cell>
+                  </row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row></row>
+                  <row height="auto"></row>
+                </rows>
+              </section>
+            </sections>
+          </column>
+        </columns>
+      </tab>
+    </tabs>
+    <Navigation>
+      <NavBar></NavBar>
+      <NavBarAreas>
+        <NavBarArea Id="Info">
+          <Titles>
+            <Title LCID="1033" Text="Common" />
+          </Titles>
+        </NavBarArea>
+        <NavBarArea Id="Sales">
+          <Titles>
+            <Title LCID="1033" Text="Sales" />
+          </Titles>
+        </NavBarArea>
+        <NavBarArea Id="Service">
+          <Titles>
+            <Title LCID="1033" Text="Service" />
+          </Titles>
+        </NavBarArea>
+        <NavBarArea Id="Marketing">
+          <Titles>
+            <Title LCID="1033" Text="Marketing" />
+          </Titles>
+        </NavBarArea>
+        <NavBarArea Id="ProcessCenter">
+          <Titles>
+            <Title LCID="1033" Text="Process Sessions" />
+          </Titles>
+        </NavBarArea>
+      </NavBarAreas>
+    </Navigation>
+    <formLibraries>
+      <Library name="pdt_/Toolkit/XrmServiceToolkit.js" libraryUniqueId="{431974b5-8077-d3be-86e3-05303d86d5a8}" />
+      <Library name="pdt_/Form/TrainerQualification.js" libraryUniqueId="{068718d9-086e-56e2-44ba-55ba39b49588}" />
+    </formLibraries>
+    <events>
+      <event name="onload" application="false" active="false">
+        <Handlers>
+          <Handler functionName="addTrainerFilter" libraryName="pdt_/Form/TrainerQualification.js" handlerUniqueId="{0a2912be-5730-e312-15da-c260a2d3d93e}" enabled="true" parameters="" passExecutionContext="false" />
+        </Handlers>
+      </event>
+      <event name="onchange" application="false" active="false" attribute="pdt_trainer">
+        <Handlers>
+          <Handler functionName="setName" libraryName="pdt_/Form/TrainerQualification.js" handlerUniqueId="{d1508b2e-2b7a-1709-27cd-9ba19d34a150}" enabled="true" parameters="" passExecutionContext="false" />
+        </Handlers>
+      </event>
+      <event name="onchange" application="false" active="false" attribute="pdt_qualification">
+        <Handlers>
+          <Handler functionName="setName" libraryName="pdt_/Form/TrainerQualification.js" handlerUniqueId="{8ed39394-92b0-62b3-40a4-2edb605cae4a}" enabled="true" parameters="" passExecutionContext="false" />
+          <Handler functionName="isQualificationExists" libraryName="pdt_/Toolkit/XrmServiceToolkit.js" handlerUniqueId="{ac2306dc-e1e0-c75a-6c64-9e21e656e65b}" enabled="true" parameters="" passExecutionContext="false" />
+        </Handlers>
+      </event>
+    </events>
+    <controlDescriptions />
+  </form>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <LocalizedNames>
+    <LocalizedName description="Information" languagecode="1033" />
+  </LocalizedNames>
+  <Descriptions>
+    <Description description="A form for this entity." languagecode="1033" />
+  </Descriptions>
+</systemform>

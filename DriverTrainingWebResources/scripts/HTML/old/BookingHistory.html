@@ -1,0 +1,90 @@
+<html>
+<head>
+    <title>Booking History</title>
+    <link rel="stylesheet" type="text/css" href="../../..//WebResources/pdt_/CSS/DtStyle.css">
+    <script src="../..//ClientGlobalContext.js.aspx" type="text/javascript"></script>
+    <script src="../../..//WebResources/pdt_/Toolkit/jquery.js" type="text/javascript"></script>
+    <script src="../../..//WebResources/pdt_/Toolkit/json2.js" type="text/javascript"></script>
+    <script src="../../..//WebResources/pdt_/Toolkit/XrmServiceToolkit.min.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        function getBookingHistory()
+        { //get regarding object id
+            var contactid = window.parent.Xrm.Page.data.entity.getId();
+         
+           var fetch=" <fetch  ><entity name='pdt_feedback' >" +
+                        "<attribute name='pdt_delegatename' />"+
+                        "<attribute name='pdt_order' />"+
+                        "<attribute name='statuscode' />"+
+                        "<attribute name='pdt_courseid' />"+
+                        "<filter type='and' >"+
+                          "<condition attribute='pdt_delegate' operator='eq' value='" + contactid + "' />" +
+                        "</filter>"+
+                        "<link-entity name='salesorder' from='salesorderid' to='pdt_order' >"+
+                          "<attribute name='pdt_coursestartdate' />"+
+                          "<filter>"+
+                            "<condition attribute='pdt_coursestartdate' operator='last-x-months' value='6' />"+
+                          "</filter>" +
+                          "<order attribute='pdt_coursestartdate' descending='true' />"+
+                        "</link-entity>"+
+                      "</entity>"+
+                    "</fetch>"
+
+           var results = XrmServiceToolkit.Soap.Fetch(fetch);
+           var tbl = document.getElementById("tbl");
+
+            if (results && results.length > 0) {             
+                for (var i = 0; i < results.length; i++){
+                   
+                    var orderid = results[i].attributes["pdt_order"]!=null? results[i].attributes["pdt_order"].id:null;
+
+                    if (orderid != null) {
+                        
+                        //var url = "<a href= " + Xrm.Page.context.getClientUrl() + "/main.aspx?etn=salesorder&pagetype=entityrecord&id=" + orderid + " target='popup' >" + results[i].attributes["pdt_order"].name + "</a>";
+                      
+                     
+
+                        var urlstring = Xrm.Page.context.getClientUrl() + "/main.aspx?etn=salesorder&pagetype=entityrecord&id=" + orderid;
+
+                        var url = "<a href='" + urlstring + "'target='popup' onclick='window.open('" + urlstring + "','popup','width=600,height=600',)'; return false;'>" + results[i].attributes["pdt_order"].name + "</a>";
+
+
+                        var row1 = tbl.insertRow(i + 1);
+
+                        var ordercell = row1.insertCell(0);
+                        ordercell.innerHTML = url;
+
+                        var coursecell = row1.insertCell(1);
+                        coursecell.innerHTML = results[i].attributes["pdt_courseid"]!=null?results[i].attributes["pdt_courseid"].name:"";
+
+                        var statuscell = row1.insertCell(2);
+                        statuscell.innerHTML = results[i].attributes["statuscode"]!=null?results[i].attributes["statuscode"].formattedValue:"";
+
+                        var coursestartdatecell = row1.insertCell(3);
+                        coursestartdatecell.innerHTML = results[i].attributes["salesorder1.pdt_coursestartdate"]!=null?results[i].attributes["salesorder1.pdt_coursestartdate"].value.toDateString():"";//results[i].attributes["salesorder1.pdt_coursestartdate"].formattedValue;
+                    }
+                }
+            } else
+                return;
+        }
+
+    </script>
+
+</head>
+<body onload="getBookingHistory()">
+    <div >  
+        <table id="tbl" width="100%" class="w3-table-all">
+            <thead>
+                <tr>
+                    <th>Training Request</th>
+                    <th>Course</th>
+                    <th>Status</th>
+                    <th>Start Date</th>
+                </tr>
+            </thead>
+            <tbody align="right">
+        </table>
+
+    </div>
+</body>
+</html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyCz8enwQArbk56K1enrFVFndL8pcgB3y1A"
+    <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyDBNFPYiO2mItYtjTQUZuyx0iPW2jDUgjs" 
             type="text/javascript"></script>
     <script src='../../..//WebResources/pdt_/Form/DTUtility.js' type='text/javascript'></script>
     <script src="../../..//WebResources/pdt_/Toolkit/jquery.js" type="text/javascript"></script>
@@ -15,6 +15,7 @@
         }
     </style>
     <script type="text/javascript">
+        //AIzaSyCz8enwQArbk56K1enrFVFndL8pcgB3y1A
         var marker;
         var map;
         var geocoder;
@@ -28,24 +29,24 @@
 
         function initialize() {
             geocoder = new google.maps.Geocoder();
-             map = new google.maps.Map(
-              document.getElementById('map'), {
-                  center: new google.maps.LatLng(51.5073, -0.127509),
-                  zoom: 13,
-                  mapTypeId: google.maps.MapTypeId.ROADMAP
-              });
-           
+            map = new google.maps.Map(
+             document.getElementById('map'), {
+                 center: new google.maps.LatLng(51.5073, -0.127509),
+                 zoom: 13,
+                 mapTypeId: google.maps.MapTypeId.ROADMAP
+             });
+
             //var marker = new google.maps.Marker({
             //    position: new google.maps.LatLng(51.5073, -0.127509),
             //    map: map
             //});
             console.log("initialised");
 
+
+            google.maps.event.addDomListener(window, 'load', initialize);
+            google.maps.event.addDomListener(window, 'load', WaitSearchManager);
+            //  google.maps.event.addDomListener(window, 'load', loadTrainers);
         }
-        google.maps.event.addDomListener(window, 'load', initialize);
-        google.maps.event.addDomListener(window, 'load', WaitSearchManager);
-      //  google.maps.event.addDomListener(window, 'load', loadTrainers);
-    
         function WaitSearchManager() {
 
             if (!map) {
@@ -53,7 +54,7 @@
             } else {
                 // Set location on form here if it isn't in getLocation()
                
-                loadTrainers();
+               // loadTrainers();
                 loadAccounts();
             }
         }
@@ -496,8 +497,21 @@
     </script>
 </head>
 <body>
-    <div id="map"></div>
+
+    <div>
+        <div>
+            <a href='#' class='buttonlink' style="float:left" onclick="initialize()">Refresh Map</a>
+        </div>
+        <br />
+        <div>
+            <p id='map' style='width: 100%; height: 100%;'></p>
+        </div>
+    </div>
+
 </body>
+<!--<body>
+    <div id="map"></div>
+</body>-->
 </html>
 
 

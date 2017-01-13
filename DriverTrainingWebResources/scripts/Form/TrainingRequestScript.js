@@ -116,6 +116,10 @@ function addRequesterFilter() {
         addLookupRequesterNameFilter("pdt_alternaterequester");
 
     });
+    Xrm.Page.getControl("pdt_safetymanager").addPreSearch(function () {
+        addLookupRequesterNameFilter("pdt_safetymanager");
+
+    });
 }
 function addLookupRequesterNameFilter(requester) {
     var functionName = "addLookupRequesterNameFilter";
@@ -578,8 +582,9 @@ function trainerInvoiceMessages() {
     var submitStatus = Xrm.Page.getAttribute("statuscode").getValue();
     var trainingprovider = Xrm.Page.getAttribute("pdt_trainingprovider").getValue();
     var selectedTrainer = Xrm.Page.getAttribute("pdt_trainer").getValue();
-
-    if (submitStatus!=749700019 || trainingprovider==null || selectedTrainer== null) {
+    var numberofDelegates = Xrm.Page.getAttribute("pdt_numberofdelegates").getValue();
+    
+    if (numberofDelegates>0) {//(submitStatus!=749700019 || trainingprovider==null || selectedTrainer== null) {
 
         Xrm.Page.ui.setFormNotification("TRAINER INVOICE: To create trainer invoice, Selected Trainer and Training Provider are required and there must be no delegates with status “Enrolled”", "INFORMATION", "TRMSG1");
 

@@ -185,3 +185,4 @@ function saveRecord() {
     Xrm.Page.data.entity.save();
 
 }
+function test(trainer) { alert(trainer.name);}

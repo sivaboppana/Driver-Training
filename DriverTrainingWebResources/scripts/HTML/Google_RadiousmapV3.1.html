@@ -1,0 +1,665 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>  
+    <script src="../../ClientGlobalContext.js.aspx" type="text/javascript"></script>
+    <script src='../../..//WebResources/pdt_/Form/DTUtility.js' type='text/javascript'></script>
+    <script src="../../..//WebResources/pdt_/Toolkit/jquery.js" type="text/javascript"></script>
+    <script src="../../..//WebResources/pdt_/Toolkit/json2.js" type="text/javascript"></script>
+    <script src="../../..//WebResources/pdt_/Toolkit/XrmServiceToolkit.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="../../..//WebResources/pdt_/CSS/DtStyle.css" />
+    <title>Google Map V3.1</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+   
+  </head>
+  <body>
+     
+    <div id="floating-panel">
+        <div>
+            Radius: <input type="text" id="radius" name="radius" value="90" maxlength="3" size="4"><br>
+            <input class="link" id="refresh" type="button" value="Refresh Map">                       
+        </div>
+    </div>
+
+    
+    <div id="map"></div>
+    <script>
+        var currentTrainer;
+        var map;
+        var geocoder;
+        var markers = [];
+
+        var urlBase = parent.window.Xrm.Page.context.getClientUrl();
+        var iconTrainingSite = '//WebResources/pdt_/Images/trainingsite.png';
+        var iconGreen = '//WebResources/pdt_/Images/green.png';
+        var iconAmber = '//WebResources/pdt_/Images/amber.png';
+        var iconRed = '//WebResources/pdt_/Images/red.png';
+        var iconPhone = '//WebResources/pdt_/Images/phone.png';
+        var iconMobile = '//WebResources/pdt_/Images/mobile.png';
+
+       
+        var searchCenter = null;
+        var bounds = null;
+        var radius = 0;
+
+
+        function initMap() {
+            if (!map) {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 8,
+                    disableDefaultUI: true,
+                    center: { lat: 51.5073, lng: -0.127509 }
+                });
+                geocoder = new google.maps.Geocoder();
+                var control = document.getElementById('refresh');
+                var panel = document.getElementById('floating-panel');
+                panel.appendChild(control);
+
+
+                google.maps.event.addDomListener(control, 'click', function () {
+   
+                        WaitSearchManager();
+                    });
+                control.index = 1;
+                map.controls[google.maps.ControlPosition.TOP_RIGHT].push(panel);
+                //document.getElementById('refresh').addEventListener('click', function () {
+   
+                //    WaitSearchManager();
+                //});
+         
+            }
+            WaitSearchManager();
+      }
+        function WaitSearchManager() {
+
+            if (!map) {
+                setTimeout(WaitSearchManager, 500, null); // setTimeout(func, timeMS, params...)
+            } else {
+                
+                evalRadius();
+                deleteMarkers();
+                loadAccounts();
+                loadTrainers();
+            
+              
+            }
+        }
+        function evalRadius() {
+
+            // parseInt(document.getElementById('radius').value, 10) * 1000;
+
+            if (document.getElementById('radius') != undefined) {
+                radius = parseInt(document.getElementById('radius').value, 10) * 1000*1.61;
+            }
+            if (radius == 0 || radius==undefined) {
+                radius = 90000;
+            }
+
+        }
+        function clearMarkers() {
+            setMapOnAll(null);
+        }
+
+        // Shows any markers currently in the array.
+        function showMarkers() {
+            setMapOnAll(map);
+        }
+
+        // Deletes all markers in the array by removing references to them.
+        function deleteMarkers() {
+            if (markers.length > 0) {
+                clearMarkers();
+                markers = [];
+            }
+        }
+
+        function setMapOnAll(map) {
+            if (markers.length > 0) {
+                for (var i = 0; i < markers.length; i++) {
+                    markers[i].setMap(map);
+                }
+            }
+        }
+      
+        function loadAccounts() {
+
+          var trainingSite = null;
+          var functionname = "loadAccounts";
+          var query = "";
+          if (window.parent.Xrm.Page.getAttribute("pdt_trainingsite") && window.parent.Xrm.Page.getAttribute("pdt_trainingsite").getValue() != null) {
+              trainingSite = window.parent.Xrm.Page.getAttribute("pdt_trainingsite").getValue()[0].id;
+          }
+          else {
+             console.error("Training Site Required");
+              return;
+          }
+          try {
+
+              var myfetchXml = "<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>" +
+                "<entity name='account'>" +
+                  "<attribute name='accountid' />" +
+                  "<attribute name='name' />" +
+                  "<attribute name='address1_postalcode' />" +
+                  "<attribute name='address1_line1' />" +
+                  "<attribute name='address1_stateorprovince' />" +
+                  "<attribute name='address1_country' />" +
+                  "<attribute name='address1_city' />" +
+                  "<attribute name='address1_longitude' />" +
+                  "<attribute name='address1_latitude' />" +
+                  "<order attribute='address1_longitude' descending='false' />" +
+                  "<filter type='or'>" +
+                   "<condition attribute='accountid' operator='eq' uitype='opportunity' value='" + trainingSite + "' />" +
+                  "</filter>" +
+                "</entity>" +
+              "</fetch>";
+
+              var results = XrmServiceToolkit.Soap.Fetch(myfetchXml);
+
+              if (results != null && results.length > 0) {
+
+                  var result = results[0];
+                  var jsonString = String(JSON.stringify(result));
+
+        
+                  geocodeAccount(jsonString);
+              }
+
+          }
+          catch (err) {
+              window.parent.Xrm.Utility.alertDialog("function :" + functionname + " " + err.message);
+          }
+      }
+        function loadTrainers() {
+            var results;
+            var functionname = "loadTrainers";
+
+            if (isTrainingDatesProvided() == false) return;
+            var order = window.parent.Xrm.Page.data.entity.getId();
+            var productid = window.parent.Xrm.Page.getAttribute("pdt_course").getValue() != null ? window.parent.Xrm.Page.getAttribute("pdt_course").getValue()[0].id : null;
+            if (productid == null || productid == undefined) return;
+
+            var currentDate = new Date();//.format("yyyy-MM-dd");
+            var dd = currentDate.getDate();
+            var mm = currentDate.getMonth() + 1;
+            var yyyy = currentDate.getFullYear();
+            currentDate = yyyy + "-" + mm + "-" + dd;
+
+            var courseStartDate = window.parent.Xrm.Page.getAttribute("pdt_coursestartdate").getValue();
+
+            if (courseStartDate != null) {
+                currentDate = courseStartDate.format("yyyy-MM-dd");//formattedDate(courseStartDate);
+            }
+
+            var trainers = null;
+            try{
+                // Unexpired qualified trainers
+                var myfetchXml = "<fetch>" +
+                                    "<entity name='contact' >" +
+                                      "<attribute name='contactid' alias='contactid' />" +
+                                      "<attribute name='fullname' alias='name' />" +
+                                      "<attribute name='address1_city' alias='city' />" +
+                                      "<attribute name='address1_line1' alias='line1' />" +
+                                      "<attribute name='address1_stateorprovince' alias='state' />" +
+                                      "<attribute name='address1_postalcode' alias='postcode' />" +
+                                      "<attribute name='telephone1' alias='businessphone' />" +
+                                      "<attribute name='mobilephone' alias='mobile' />" +
+                                      "<filter type='and' >" +
+                                        "<condition attribute='address1_postalcode' operator='not-null' />" +
+                                        //"<condition attribute='customertypecode' operator='eq' value='749700000' />" +
+                                        //"<condition attribute='pdt_pertempsapprovedtrainer' operator='eq' value='749700000' />" +
+                                        //"<condition attribute='statecode' operator='eq' value='0' />" +
+                                        // "<condition attribute='pdt_eligibilitytowork' operator='eq' value='1' />"+
+                                      "</filter>" +
+                                      //"<link-entity name='pdt_trainerqualification' from='pdt_trainer' to='contactid' >" +
+                                      //  "<filter>" +
+                                      //    "<condition attribute='pdt_expirydate' operator='on-or-after' value='2016-10-28' />" +
+                                      //  "</filter>" +
+                                      //  "<link-entity name='pdt_qualification' from='pdt_qualificationid' to='pdt_qualification' >" +
+                                      //      "<link-entity name='pdt_product_pdt_qualification' from='pdt_qualificationid' to='pdt_qualificationid' intersect='true' >" +
+                                      //      "<filter>" +
+                                      //        "<condition attribute='productid' operator='eq' value='" + productid + "' />" +
+                                      //      "</filter>" +
+                                      //    "</link-entity>" +
+                                      //  "</link-entity>" +
+                                      //"</link-entity>" +
+                                      "<link-entity name='pdt_trainerscalender' from='pdt_trainer' to='contactid' >" +
+                                        "<attribute name='pdt_type' alias='type' />" +
+                                        "<attribute name='pdt_starttime' alias='starttime' />" +
+                                        "<attribute name='pdt_endtime' alias='endtime'/>" +
+                                        "<attribute name='statuscode' alias='reason'/>" +                                   
+                                        "<filter type='and' >" +
+                                          "<condition attribute='pdt_type' operator='not-null' />" +
+                                     //      "<condition attribute='statuscode' operator='eq'  value='749700005'/>" +
+                                          "<filter type='or' >" +
+                                            "<condition attribute='pdt_orderid' operator='null' />" +
+                                            "<condition attribute='pdt_orderid' operator='eq' value='" + order + "' />" +
+                                          "</filter>" +
+                                          "<filter type='or' >" +
+                                           getTrainerDateFetchString()+
+                                          "</filter>" +
+                                        "</filter>" +
+                                      "</link-entity>" +
+                                    "</entity>" +
+                                  "</fetch>";
+
+                results = XrmServiceToolkit.Soap.Fetch(myfetchXml);
+            }
+            catch (err) {
+                window.parent.Xrm.Utility.alertDialog("function :" + functionname + " " + err.message);
+            }
+
+            if (results == undefined) return;
+           
+            if (results.length > 0)
+                trainers = getTrainers(results);
+        
+            if (trainers == undefined) return;
+
+
+              Object.keys(trainers).forEach(function (key, index) {
+                  // key: the name of the object key
+                  // index: the ordinal position of the key within the object
+                  var trainer = trainers[key];
+                  var url = "";
+                  var searchString =  trainer.city + "," + trainer.state + "," + trainer.postalcode;//trainer.line + "," + trainer.city + "," + trainer.state + "," + trainer.postalcode;             
+                  
+                  geocodeContact(searchString, map, trainer);
+
+              });// LOOP END
+          }
+
+        function isTrainingDatesProvided() {
+              var fields = ["pdt_dateoption1", "pdt_dateoption2", "pdt_dateoption3", "pdt_coursestartdate"];
+              var dates = [];
+            
+              var myDate;
+              var output;
+             
+
+              for (i = 0; i < fields.length; i++) {
+
+
+                  if (window.parent.Xrm.Page.getAttribute(fields[i]) != undefined) {
+
+                      var year = new Date(window.parent.Xrm.Page.getAttribute(fields[i]).getValue()).getUTCFullYear();
+                      if (year != "1970") {
+                          myDate = new Date(window.parent.Xrm.Page.getAttribute(fields[i]).getValue());
+                         dates.push(myDate)
+                      }
+                  }
+              }
+              var training=dates.length>0?true:false;
+              return training;
+          }
+        function getTrainerDateFetchString() {
+              var fields = ["pdt_dateoption1", "pdt_dateoption2", "pdt_dateoption3", "pdt_coursestartdate"];
+              var dates = [];
+              var fetchOutput = "";
+              var myDate;
+              var output;
+              var minDate;
+              var maxDate;
+
+              for (i = 0; i < fields.length; i++) {
+
+
+                  if (window.parent.Xrm.Page.getAttribute(fields[i]) != undefined) {
+
+                    var year = new Date(window.parent.Xrm.Page.getAttribute(fields[i]).getValue()).getUTCFullYear();
+                      if (year != "1970") {
+                          myDate = new Date(window.parent.Xrm.Page.getAttribute(fields[i]).getValue());
+                          //2016-11-30-08:00
+                          output = (myDate.getFullYear() + "-" + (myDate.getMonth() + 1) + "-" + (myDate.getDate() + "-" + myDate.getHours() + ":" + myDate.getMinutes()));
+                          fetchOutput = fetchOutput + "<filter type='and' >" +
+                                         "<condition attribute='pdt_starttime' operator='le' value='" + output + "' />" +
+                                         "<condition attribute='pdt_endtime' operator='ge' value='" + output + "' />" +
+                                       "</filter>";
+                      }
+                  }
+              }
+              return fetchOutput;
+          }
+       
+        function getTrainers(results) {
+              if (results == null || results.length == 0) return;
+
+              var trainers = {};
+              var userData = {};
+
+              for (i = 0; i < results.length; i++) {
+                  var result = results[i];
+
+
+                  var guid = result.attributes["contactid"] ? result.attributes["contactid"].value : "";
+
+                  var line1 = result.attributes["line1"] ? result.attributes["line1"].value : "-";
+                  var city = result.attributes["city"] ? result.attributes["city"].value : "-";
+                  var state = result.attributes["state"] ? result.attributes["state"].value : "-";
+                  var postalcode = result.attributes["postcode"] ? result.attributes["postcode"].value : "-";
+                  var resultName = result.attributes["name"] ? result.attributes["name"].value : "";
+                  var parentCompany = result.attributes["company"] ? result.attributes["company"].id : null;
+                  var phone = result.attributes["businessphone"] ? result.attributes["businessphone"].value : "";
+                  var mobile = result.attributes["mobile"] ? result.attributes["mobile"].value : "";
+                  var searchString = line1 + "," + city + "," + state + "," + postalcode;
+
+                  // var ctype = result.attributes["pdt_type"] ? result.attributes["pdt_type"].value : "";
+                  var recType = result.attributes["type"] ? result.attributes["type"].formattedValue : "";
+                  var recReason = result.attributes["reason"] ? result.attributes["reason"].formattedValue : "";
+                  var start = result.attributes["starttime"] ? result.attributes["starttime"] : "";
+                  var end = result.attributes["endtime"] ? result.attributes["endtime"] : "";
+              
+                  var trainer = {};
+
+                  if (trainers[guid] == undefined) {
+
+                      trainer = {
+                          name: resultName,
+                          id: guid,
+                          type: "contact",
+                          company: parentCompany,
+                          line: line1,
+                          city: city,
+                          state: state,
+                          postalcode: postalcode,
+                          available: 0,
+                          phone: phone,
+                          mobile: mobile,
+                          recReason:recReason,
+                          address: ""                       
+                      };
+
+                      trainers[guid] = trainer;
+                  }
+                  if (recType == "Available") {//"749700000") {
+                      if (recReason == "Available") {
+                          trainers[guid].available = 1;
+                          recType = '<font color="green">Available-';
+                      } else {
+                          trainers[guid].available = 1;
+                          recType = '<font color="red">Busy-';
+
+                      }
+                  }
+                  else if (recType == "Request") {//"749700001") {
+                      if (recReason == "Awaiting Response") 
+                          recType = '<font color="DarkOrange">Awaiting-';
+                      else if (recReason == "Requested")
+                          recType = '<font color="red">Busy-';
+                      
+                      if (trainers[guid].available != 1)
+                          trainers[guid].available = 2;
+
+                  }
+
+                  if (trainers[guid].address == "")
+                      trainers[guid].address = recType + ": " + start.formattedValue + " - " + end.formattedValue+'</font>';
+                  else
+                      trainers[guid].address = trainers[guid].address + "<br />" + recType + ": " + start.formattedValue + " - " + end.formattedValue + '</font>';
+                                  
+              }
+              return trainers;
+          }        
+      
+
+        function geocodeAccount(jstring) {
+         
+          var name = "";
+          var id = "";
+          var accountData = JSON.parse(jstring);
+          var url = urlBase + iconTrainingSite;
+         
+          if (accountData.attributes.name != undefined)
+              name = accountData.attributes.name.value;
+      
+
+          var address = "";
+          if (accountData.attributes.address1_line1 != undefined)
+              address = accountData.attributes.address1_line1.value;
+          if (accountData.attributes.address1_city != undefined)
+              address = address+"," + accountData.attributes.address1_city.value;
+          if (accountData.attributes.state != undefined)
+              address =address+ "," + accountData.attributes.address1_state.value;
+          if (accountData.attributes.address1_postalcode != undefined)
+              address = address+"," + accountData.attributes.address1_postalcode.value;
+          
+
+     
+
+
+          geocoder.geocode({ 'address': address }, function (results, status) {
+              if (status === 'OK') {
+                  map.setCenter(results[0].geometry.location);
+                  searchCenter = results[0].geometry.location;
+                  bounds = new google.maps.LatLngBounds();
+
+
+                  marker = new google.maps.Marker({
+                      map: map,
+                      icon: url,
+                      position: results[0].geometry.location
+                  });
+            //      markers.push(marker);
+                  var content = '<div class="customInfobox"><div class="title">' + name + '<br>' + address;
+                 // content = content + '<input type=hidden name="trainer" id="jstr" value=\'' + jstring + '\'>' + '</div>';
+                  var tooltip = new google.maps.InfoWindow({
+                  
+                      content: content,//'<div class="customInfobox"><div class="title">' + name + '<br>' + address + '</div>',
+                      position: results[0].geometry.location
+                  });
+               //   markers.push(tooltip);
+                  google.maps.event.addListener(marker, 'mouseover', function () {
+                      tooltip.open(map, marker);
+                  });
+                  google.maps.event.addListener(marker, 'mouseout', function () {
+                      tooltip.close();
+                  });
+                  google.maps.event.addListener(marker, 'click', function () {
+                      tooltip.close();
+                      redirect("account", jstring);
+                  });
+              
+
+
+              } else {
+                  console.error('Geocode for Account ' + address + ' was not successful for the following reason: ' + status);
+              }
+          });
+
+        }
+
+      
+        function geocodeContact(address, resultsMap, trainer) {
+
+          var icon;
+         
+          if (trainer.available == 1) icon =urlBase +   iconGreen;
+          if (trainer.available == 0) icon = urlBase + iconAmber;
+          if (trainer.available == 2) icon = urlBase + iconRed;
+
+
+          geocoder.geocode({ 'address': address }, function (results, status) 
+          {
+              if (status === 'OK') {
+                  //resultsMap.setCenter(results[0].geometry.location);
+                  var marker = new google.maps.Marker({
+                      map: resultsMap,
+                      title:trainer.name,
+                      icon:icon,
+                      position: results[0].geometry.location
+                  });
+                  markers.push(marker);
+                  var content = getInfoContent(trainer);
+                  // Initialise the inforWindow
+                  var infoWindow = new google.maps.InfoWindow({
+
+                      content:content,
+                      position: results[0].geometry.location
+                  });
+              
+                  var jsonString = String(JSON.stringify(trainer));
+              
+                  var tooltip = new google.maps.InfoWindow({
+                     
+                      content: '<div class="customInfobox"><div class="title">' + trainer.name + '</div>',
+                      position: results[0].geometry.location
+
+                  });
+                //  markers.push(tooltip);
+                  google.maps.event.addListener(marker, 'click', function () {
+                    
+                      infoWindow.open(resultsMap, marker);
+                      tooltip.close();                    
+                  });
+                  google.maps.event.addListener(infoWindow, 'click', function () {
+                      infoWindow.close();
+                  });
+
+                  google.maps.event.addListener(marker, 'mouseover', function () {
+                      tooltip.open(resultsMap, marker);
+                  });
+                  google.maps.event.addListener(marker, 'mouseout', function () {
+                      tooltip.close();
+                  });
+                  google.maps.event.addListener(map, 'click', function () {
+                      infoWindow.close();
+                      tooltip.close();
+                  });
+
+                  var distanceFromCenter = google.maps.geometry.spherical.computeDistanceBetween(marker.getPosition(), searchCenter);
+                  console.log("Trainer: " + trainer.name);
+                  console.log("Distance From Center: " + distanceFromCenter);
+                  console.log("radius: " + radius);
+                  console.log("---------- " );
+
+                  if (distanceFromCenter < radius)
+                      marker.setMap(resultsMap);
+                  else
+                      marker.setMap(null);
+
+              } else {
+                  console.error('Geocode for Contact '+address+' was not successful for the following reason: ' + status);
+              }
+          });
+        }
+
+        function getInfoContent(trainer)
+        {
+          var jsonString = String(JSON.stringify(trainer));
+         
+          
+          var content = '<div class="header">' +
+                            '<a href="#" class="link"  onclick="redirect(\'' + "contact" + '\')"><b>' + trainer.name + '</b></a> ' +
+                         '</div>' +
+                        '<div class="content">'+trainer.address+'</div>' +
+                        '<div class="footer"><input type=hidden name="trainer" id="jstr" value=\'' + jsonString + '\'><a href="#" class="smlbtn1" style="float:left" onclick="addData(\'' + trainer.name + '\')"">Select Me!</a></div>';
+
+          return content;
+        }
+
+        function redirect(entitytype,jstring) {
+          var data = "";
+          if (entitytype == "contact") 
+              data = document.getElementById('jstr')!=null ?document.getElementById('jstr').value:null;
+          else
+              data = jstring!=undefined?jstring:null;
+          
+          var userData = data != null ? JSON.parse(data) : null;
+          if (userData)
+              Xrm.Utility.openEntityForm(entitytype, userData.id, null);
+          else
+              console.error("Jstring is null");
+        }
+
+        function addData(name) {
+         
+            var data = document.getElementById('jstr').value;
+         
+            var userData = JSON.parse(data);
+         
+            if (userData.available == 1) {
+                var exisitngTrainerid = parent.Xrm.Page.getAttribute("pdt_trainer").getValue() ? parent.Xrm.Page.getAttribute("pdt_trainer").getValue()[0].id : null;
+                if(exisitngTrainerid!=null){
+                    var userid = userData.id;
+                    var ind = exisitngTrainerid.toLowerCase().indexOf(userid);
+
+                    if (ind != -1) {
+
+                               window.Xrm.Utility.alertDialog("Trainer is already been Selected");
+                               return;
+                    } else {
+
+                        var trainer = getEntityObjectV2(userData, "contact");
+                        window.parent.Xrm.Page.getAttribute("pdt_trainer").setValue(trainer);
+                        window.Xrm.Utility.confirmDialog("Trainer Selected");
+                        return;
+
+                    }
+                    
+                } else {
+
+                    var trainer = getEntityObjectV2(userData, "contact");
+                    window.parent.Xrm.Page.getAttribute("pdt_trainer").setValue(trainer);
+                    window.Xrm.Utility.confirmDialog("Trainer Selected");
+                    return;
+
+                }
+            }
+          
+
+          window.parent.Xrm.Utility.confirmDialog("Adding Trainer Request to :" + userData.name, function () {
+              var nc = new XrmServiceToolkit.Soap.BusinessEntity("pdt_trainerscalender");        
+              nc.attributes["pdt_trainer"] = { id: userData.id, logicalName: "contact", type: "EntityReference" };
+
+              //  if (userData.company != undefined)
+              //     nc.attributes["pdt_trainercompany"] = { id: userData.company, logicalName: "account", type: "EntityReference" };
+              nc.attributes["pdt_type"] = { value: 749700000, type: "OptionSetValue" };
+              nc.attributes["statuscode"] = { value: 749700001, type: "OptionSetValue" };
+
+              nc.attributes["pdt_orderid"] = { id: window.parent.Xrm.Page.data.entity.getId(), logicalName: "salesorder", type: "EntityReference" }
+
+              // nc.attributes["pdt_trainercompany"] =  window.parent.Xrm.Page.getAttribute("pdt_trainingprovidercompany") ? window.parent.Xrm.Page.getAttribute("pdt_trainingprovidercompany").getValue() : null;
+              nc.attributes["pdt_starttime"] = window.parent.Xrm.Page.getAttribute("pdt_coursestartdate") ? window.parent.Xrm.Page.getAttribute("pdt_coursestartdate").getValue() : null;
+              nc.attributes["pdt_endtime"] = window.parent.Xrm.Page.getAttribute("pdt_courseenddate") ? window.parent.Xrm.Page.getAttribute("pdt_courseenddate").getValue() : null;
+              if (window.parent.Xrm.Page.getAttribute("pdt_trainingsite").getValue() != undefined)
+                  nc.attributes["pdt_trainingsite"] = { id: window.parent.Xrm.Page.getAttribute("pdt_trainingsite").getValue()[0].id, logicalName: "account", type: "EntityReference" };
+              var ncId;
+
+              var rows = window.parent.Xrm.Page.getControl("sg_trainers").getGrid().getRows();
+              var exists = false;
+
+              rows.forEach(function (row, i) {
+                  var attb = row.getData().getEntity().getAttributes().getAll();
+                  var id = row.getData().getEntity().getAttributes().get("pdt_trainer").getValue()[0].id;
+                  loop: {
+                      if (id.replace(/[{}]/g, "").toLowerCase() === userData.id.replace(/[{}]/g, "").toLowerCase()) {
+                          window.Xrm.Utility.alertDialog("Trainer was alredy requested");
+                          exists = true;
+                          break loop;
+                      }
+                  }
+              });
+
+              if (!exists) {
+                  try {
+                      ncId = XrmServiceToolkit.Soap.Create(nc);
+                      window.parent.Xrm.Page.getControl("sg_trainers").refresh();
+                  } catch (e) {
+                      console.error(e.message);
+                  }
+              }
+
+
+          }, function () {
+
+              // on error
+              console.error("Error creating Trainer Caledar");
+          });
+        };//addData
+
+    </script>
+      <script async defer src="//maps.googleapis.com/maps/api/js?key=AIzaSyDBNFPYiO2mItYtjTQUZuyx0iPW2jDUgjs&callback=initMap&libraries=geometry"
+          
+              type="text/javascript"></script>
+  </body>
+</html>

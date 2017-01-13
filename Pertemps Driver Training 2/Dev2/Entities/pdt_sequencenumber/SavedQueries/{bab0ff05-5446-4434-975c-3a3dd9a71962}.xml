@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedquery>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>0</CanBeDeleted>
+  <isquickfindquery>0</isquickfindquery>
+  <isprivate>0</isprivate>
+  <isdefault>1</isdefault>
+  <returnedtypecode>10007</returnedtypecode>
+  <savedqueryid>{bab0ff05-5446-4434-975c-3a3dd9a71962}</savedqueryid>
+  <layoutxml>
+    <grid name="" object="10007" jump="pdt_name" select="1" icon="1" preview="0">
+      <row name="pdt_sequencenumber" id="pdt_sequencenumberid">
+        <cell name="pdt_name" width="300" />
+        <cell name="createdon" width="125" />
+      </row>
+    </grid>
+  </layoutxml>
+  <querytype>64</querytype>
+  <fetchxml>
+    <fetch version="1.0" mapping="logical">
+      <entity name="pdt_sequencenumber">
+        <attribute name="pdt_sequencenumberid" />
+        <attribute name="pdt_name" />
+        <attribute name="createdon" />
+        <filter type="and">
+          <condition attribute="statecode" operator="eq" value="0" />
+        </filter>
+      </entity>
+    </fetch>
+  </fetchxml>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <LocalizedNames>
+    <LocalizedName description="Sequence Number Lookup View" languagecode="1033" />
+  </LocalizedNames>
+</savedquery>

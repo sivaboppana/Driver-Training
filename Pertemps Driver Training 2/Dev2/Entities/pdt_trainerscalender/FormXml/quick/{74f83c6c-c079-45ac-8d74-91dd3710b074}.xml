@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<systemform>
+  <formid>{74f83c6c-c079-45ac-8d74-91dd3710b074}</formid>
+  <IntroducedVersion>1.0.0.2</IntroducedVersion>
+  <FormPresentation>1</FormPresentation>
+  <FormActivationState>1</FormActivationState>
+  <form>
+    <tabs>
+      <tab verticallayout="true" id="{ecddea25-e159-46e3-89bb-6839ccaba8d9}" IsUserDefined="1">
+        <labels>
+          <label description="" languagecode="1033" />
+        </labels>
+        <columns>
+          <column width="100%">
+            <sections>
+              <section showlabel="false" showbar="false" IsUserDefined="0" id="{7d6acc13-503f-48cb-96bd-06451d21b7e0}">
+                <labels>
+                  <label description="GENERAL" languagecode="1033" />
+                </labels>
+                <rows>
+                  <row>
+                    <cell id="{f07c9bc4-2b9f-4606-a1f0-902bfec156bd}">
+                      <labels>
+                        <label description="Name" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_name" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="pdt_name" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{8729d314-f735-4407-9ea2-7985e8d68bad}">
+                      <labels>
+                        <label description="Owner" languagecode="1033" />
+                      </labels>
+                      <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{8b076a90-90d8-db62-2d44-3c52a177b26c}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Trainer Company" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_trainercompany" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_trainercompany" disabled="false" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{930152a9-2e71-3217-77dc-be4b15961a69}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Trainer" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_trainer" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pdt_trainer" disabled="false" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{46aea391-c38e-e286-d82d-e6501277c542}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="Start Time" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_starttime" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="pdt_starttime" disabled="false" />
+                    </cell>
+                  </row>
+                  <row>
+                    <cell id="{6681c8da-7a80-a76b-53ee-257c3e803cec}" showlabel="true" locklevel="0">
+                      <labels>
+                        <label description="End Time" languagecode="1033" />
+                      </labels>
+                      <control id="pdt_endtime" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="pdt_endtime" disabled="false" />
+                    </cell>
+                  </row>
+                </rows>
+              </section>
+            </sections>
+          </column>
+        </columns>
+      </tab>
+    </tabs>
+  </form>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <LocalizedNames>
+    <LocalizedName description="Information" languagecode="1033" />
+  </LocalizedNames>
+</systemform>

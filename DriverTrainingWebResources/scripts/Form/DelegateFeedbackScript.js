@@ -148,10 +148,15 @@ function setName() {
 
 function onSubmitStatusChange() {
     var submitStatus = Xrm.Page.getAttribute("statuscode").getValue();
-    if (submitStatus == 749700004) 
+    var currentUser = Xrm.Page.context.getUserName();
+    if (submitStatus == 749700004) {
         Xrm.Page.getAttribute("pdt_feedbacksubmittedon").setValue(Date.now());
-    else
+        Xrm.Page.getAttribute("pdt_submittedby").setValue(currentUser);
+    }
+    else {
         Xrm.Page.getAttribute("pdt_feedbacksubmittedon").setValue(null);
+        Xrm.Page.getAttribute("pdt_submittedby").setValue("");
+    }
 }
 /*
 function onStatusChange() {

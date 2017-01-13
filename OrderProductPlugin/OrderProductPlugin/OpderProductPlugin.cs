@@ -23,6 +23,7 @@ namespace Pertemps.DriverTraining.Plugins.OrderProductPlugin
             bool isPriceOverridden = false;
             bool isProductOverridden = false;
 
+            try { 
             product = service.Retrieve(Product.EntityLogicalName, order.pdt_course.Id, new ColumnSet("producttypecode", "defaultuomid")) as Product;
             
             if (product == null) { tracingservice.Trace("No Product available"); return; }
@@ -64,12 +65,29 @@ namespace Pertemps.DriverTraining.Plugins.OrderProductPlugin
                  tracingservice.Trace(" Order Product Created:" + lineItemId.ToString());
                        
             return;
+            }
+            catch (InvalidPluginExecutionException ex)
+            {
+                tracingservice.Trace(ex.Message);
+                throw;
+            }
+            catch (ApplicationException ex)
+            {
+                tracingservice.Trace(ex.Message);
+                throw new InvalidPluginExecutionException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                tracingservice.Trace(ex.Message);
+                throw new InvalidPluginExecutionException(ex.ToString());
+            }
         }
         #endregion
 
         #region UpdateOrderProduct
         internal static void UpdateOrderProduct(SalesOrder image,SalesOrder order, IOrganizationService service, ITracingService tracingservice)
         {
+            try { 
            
             if (order.SalesOrderId == Guid.Empty)
             {
@@ -160,6 +178,22 @@ namespace Pertemps.DriverTraining.Plugins.OrderProductPlugin
                 tracingservice.Trace(" Order Product Updated");           
                 return;
             }
+            catch (InvalidPluginExecutionException ex)
+            {
+                tracingservice.Trace(ex.Message);
+                throw;
+            }
+            catch (ApplicationException ex)
+            {
+                tracingservice.Trace(ex.Message);
+                throw new InvalidPluginExecutionException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                tracingservice.Trace(ex.Message);
+                throw new InvalidPluginExecutionException(ex.ToString());
+            }
+        }
         #endregion
 
       

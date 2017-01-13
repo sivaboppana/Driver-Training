@@ -39,16 +39,19 @@ namespace Pertemps.DriverTraining.Plugins.InvoicePlugin
 
                 }
             }
-            catch (InvalidPluginExecutionException)
+            catch (InvalidPluginExecutionException ex)
             {
+                tracingservice.Trace(ex.Message);
                 throw;
             }
             catch (ApplicationException ex)
             {
+                tracingservice.Trace(ex.Message);
                 throw new InvalidPluginExecutionException(ex.Message);
             }
             catch (Exception ex)
             {
+                tracingservice.Trace(ex.Message);
                 throw new InvalidPluginExecutionException(ex.ToString());
             }
         }
