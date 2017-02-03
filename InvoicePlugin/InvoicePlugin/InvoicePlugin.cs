@@ -67,17 +67,44 @@ namespace Pertemps.DriverTraining.Plugins.InvoicePlugin
             }
         }
 
+    
+     
+        internal static void UpdateTaxOnDetails( Invoice inv,IOrganizationService service, ITracingService tracingservice)
+        {
+            EntityCollection details = GetInvoiceDetails(InvoiceDetail.EntityLogicalName, "invoiceid", inv.Id, service, tracingservice);
+            if (details != null)
+            {
+                if (details.Entities.Count > 0)
+                {
+                    InvoiceDetail detail = details.Entities[0].ToEntity<InvoiceDetail>();
+                   
+                    decimal invVat = inv.pdt_VAT != null ? inv.pdt_VAT.Value : -1;
+                    decimal detVat = detail.Tax != null ? detail.Tax.Value : -1;
+
+                    if (invVat > 0 && invVat!=detVat) {
+
+                        detail.Tax = new Money(invVat);
+                        service.Update(detail);
+                        tracingservice.Trace("Tax:"+detail.Tax.Value);
+
+                    }
+                }
+
+            }
+           
+        }
+
         internal static void CreateCancellationClientInvoiceDetails(Guid inv, IOrganizationService service, ITracingService tracingservice)
         {
             try {
                 EntityReference defaultUnit = null;
-                Invoice invoice = service.Retrieve(Invoice.EntityLogicalName, inv, new ColumnSet("salesorderid", "pdt_coursecostgross")) as Invoice;
+                Invoice invoice = service.Retrieve(Invoice.EntityLogicalName, inv, new ColumnSet("salesorderid", "pdt_coursecostgrs")) as Invoice;
                 SalesOrder trainingRequest = service.Retrieve(SalesOrder.EntityLogicalName, invoice.SalesOrderId.Id, new ColumnSet("pdt_course")) as SalesOrder;
 
                 Product course = service.Retrieve(Product.EntityLogicalName, trainingRequest.pdt_course.Id, new ColumnSet("defaultuomid")) as Product;
                 defaultUnit = new EntityReference(UoMSchedule.EntityLogicalName, course.DefaultUoMId.Id);
 
-                if (invoice.pdt_CourseCostGross == null || trainingRequest.pdt_course == null)
+                if (invoice.pdt_CourseCostGrs == null || trainingRequest.pdt_course == null)
                 {
                     tracingservice.Trace("Either Course Gross Cost or Course is not avialble");
                     return;
@@ -87,11 +114,11 @@ namespace Pertemps.DriverTraining.Plugins.InvoicePlugin
                 {
                     InvoiceId = new EntityReference(Invoice.EntityLogicalName, inv),
                     Quantity = new Decimal(1),
-                    PricePerUnit = new Money(invoice.pdt_CourseCostGross.Value),
+                    PricePerUnit = new Money(invoice.pdt_CourseCostGrs.Value),
                     IsPriceOverridden = true,
                     ProductId = new EntityReference(Product.EntityLogicalName, trainingRequest.pdt_course.Id),
                     UoMId = defaultUnit != null ? defaultUnit : null,
-                    BaseAmount = new Money(invoice.pdt_CourseCostGross.Value)
+                    BaseAmount = new Money(invoice.pdt_CourseCostGrs.Value)
 
                 };
 
@@ -115,6 +142,31 @@ namespace Pertemps.DriverTraining.Plugins.InvoicePlugin
                 throw new InvalidPluginExecutionException(ex.ToString());
             }
         }
+        #region GetInvoice Details
+        internal static EntityCollection GetInvoiceDetails(string entityName, string field, Guid fieldValue, IOrganizationService service, ITracingService tracingservice)
+        {
+            try
+            {
+                QueryExpression entityQuery = new QueryExpression(entityName);
+                entityQuery.ColumnSet = new ColumnSet(entityName + "id","tax");
+                entityQuery.Criteria = new FilterExpression();
+                entityQuery.Criteria.AddCondition(field, ConditionOperator.Equal, fieldValue);
+
+                EntityCollection retrievedEntities = service.RetrieveMultiple(entityQuery);
+                if (retrievedEntities.Entities.Count > 0)
+                    return retrievedEntities;
+                
+            }
+            catch (Exception e)
+            {
+                tracingservice.Trace("There was an exception of type" + e.GetType());
+                tracingservice.Trace("Error message " + e.Message);
+                tracingservice.Trace(e.StackTrace);
+
+            }
+            return null;
+        }
+        #endregion
     }
 }
     

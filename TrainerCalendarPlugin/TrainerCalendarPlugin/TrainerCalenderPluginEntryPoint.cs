@@ -39,16 +39,20 @@ namespace Pertemps.DriverTraining.Plugins.TrainerCalenderPlugin
                 {
                     Entity preImageEntity = context.PreEntityImages["preimage"] as Entity;
 
-                    Guid trainerId = ((EntityReference)preImageEntity.Attributes["pdt_trainer"]).Id;
+                    if (preImageEntity == null) return;
+                    
+                    Guid trainerId = preImageEntity.Attributes.Contains("pdt_trainer") ?((EntityReference)preImageEntity.Attributes["pdt_trainer"]).Id:Guid.Empty;
                   
 
-                    if (trainerId != null && preImageEntity.LogicalName == "salesorder")
+                    if (trainerId != Guid.Empty && preImageEntity.LogicalName == "salesorder")
                     {
                         SalesOrder order = service.Retrieve(SalesOrder.EntityLogicalName, preImageEntity.Id, new ColumnSet("pdt_courseenddate", "pdt_coursestartdate", "pdt_trainer")) as SalesOrder;
 
-                        DateTime ostart = (DateTime)order.pdt_CourseStartDate;
-                        DateTime oend = (DateTime)order.pdt_CourseEndDate;
-                        if(ostart!=null && oend!=null)
+                        DateTime defaultDate = new DateTime();
+
+                        DateTime ostart = order.pdt_CourseStartDate!=null?(DateTime)order.pdt_CourseStartDate:new DateTime();
+                        DateTime oend = order.pdt_CourseEndDate!=null?(DateTime)order.pdt_CourseEndDate:new DateTime();
+                        if(ostart!= defaultDate && oend!= defaultDate)
                         TrainerCalenderPlugin.UpdateCalenderEntry( trainerId,ostart,oend, service, tracingservice);
 
                     }

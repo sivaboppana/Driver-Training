@@ -115,8 +115,6 @@ namespace Pertemps.DriverTraining.Plugins.TrainerCalenderPlugin
                     service.Update(entity);
                 }
             }
-
-
         }
 
 

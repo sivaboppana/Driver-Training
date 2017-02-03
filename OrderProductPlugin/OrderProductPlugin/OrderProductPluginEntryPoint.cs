@@ -46,8 +46,15 @@ namespace Pertemps.DriverTraining.Plugins.OrderProductPlugin
                             case "Update":
 
                                 SalesOrder image = context.PostEntityImages.Contains("postimage") ? context.PostEntityImages["postimage"].ToEntity<SalesOrder>() : null;
-                                if (order != null && (order.pdt_BaseAmount != null || order.pdt_course != null || order.pdt_NumberofDelegates != null || order.pdt_UploadFeeNonVat != null))
+
+                                decimal amt = order.pdt_BaseAmount != null ? order.pdt_BaseAmount.Value : 0;
+                                int number= order.pdt_NumberofDelegates != null ? order.pdt_NumberofDelegates.Value: 0;
+                                decimal upNonVat = order.pdt_UploadFeeNonVat != null ? order.pdt_UploadFeeNonVat.Value : 0;
+                                decimal upWithVat = order.pdt_UploadCostwithVAT != null ? order.pdt_UploadCostwithVAT.Value : 0;
+
+                                if (amt!=0 || number!=0 || upNonVat!=0|| upWithVat!=0||   order.pdt_course != null )
                                     OpderProductPlugin.UpdateOrderProduct(image, order, service, tracingservice);
+                                  
 
                                 break;
 

@@ -20,28 +20,31 @@ namespace Pertemps.DriverTraining.Plugins.FeedbackPlugin
 
             try
             {
-                if (context.InputParameters.Contains("Target") && context.InputParameters["Target"] is Entity)
+                if (context.InputParameters.Contains("Target") && context.InputParameters["Target"] is Entity && context.MessageName == "Update")
                 {
 
                     Entity entity = context.InputParameters["Target"] as Entity;
 
                     if (entity.LogicalName == pdt_feedback.EntityLogicalName)
                     {
-                       
-                        FeedbackPlugin.SetTrainingRequestStatus(entity, service, tracingservice);
+                        if(entity.Contains("statuscode"))
+                        FeedbackPlugin.SetTrainingRequestStatus(entity.ToEntity<pdt_feedback>(), service, tracingservice);
                     }
                 }
-                else if (context.InputParameters.Contains("Target") && context.InputParameters["Target"] is EntityReference) {
+                else if (context.InputParameters.Contains("Target") && context.InputParameters["Target"] is EntityReference && context.MessageName == "Delete")
+                {
 
-                    if (context.PreEntityImages.Contains("preimage") && context.PreEntityImages["preimage"] is Entity) {
+                    if (context.PreEntityImages.Contains("preimage") && context.PreEntityImages["preimage"] is Entity)
+                    {
 
                         Entity delEntity = context.PreEntityImages["preimage"] as Entity;
-                        FeedbackPlugin.SetTrainingRequestStatus(delEntity, service, tracingservice);
+                        FeedbackPlugin.SetTrainingRequestStatus(delEntity.ToEntity<pdt_feedback>(), service, tracingservice);
                     }
 
                 }
+               
 
-            }
+             }
             catch (InvalidPluginExecutionException ex)
             {
                 tracingservice.Trace(ex.Message);
